@@ -320,5 +320,43 @@ describe("Setup", function()
 			wow.fire("PLAYER_REGEN_ENABLED")
 			assert.equal("MULTIACTIONBAR1BUTTON1", w.overrides["SHIFT-PAD1"].action)
 		end)
+
+		describe("changes from outside LeanPad", function()
+			local function bindingsUpdate()
+				claimer():Fire("OnEvent", "UPDATE_BINDINGS")
+				wow.nextFrame()
+			end
+
+			before_each(bindingsUpdate) -- the bindings as they load are LeanPad's starting point
+
+			it("says so, and puts LeanPad's layout back on request", function()
+				assert.same({}, w.popups)
+				w.bindings.PAD1, w.bindings.PAD2 = nil, "SOME_ADDON_COMMAND"
+				bindingsUpdate()
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+				local dialog = StaticPopupDialogs.LEANPAD_CHANGED
+				assert.is_nil(dialog.hideOnEscape)
+				dialog.OnAccept()
+				assert.equal("JUMP", w.bindings.PAD1)
+				assert.is_nil(w.bindings.PAD2)
+				bindingsUpdate()
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+			end)
+
+			it("keeps the new bindings when the player chooses them, and asks no more", function()
+				w.bindings.PAD1 = nil
+				bindingsUpdate()
+				StaticPopupDialogs.LEANPAD_CHANGED.OnCancel()
+				bindingsUpdate()
+				assert.is_nil(w.bindings.PAD1)
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+			end)
+
+			it("stays quiet about LeanPad's own changes", function()
+				ns.Apply()
+				bindingsUpdate()
+				assert.same({}, w.popups)
+			end)
+		end)
 	end)
 end)

@@ -89,6 +89,21 @@ local function clearPad()
 	for key in pairs(padBindings()) do ns.BindKey(key, "") end
 end
 
+-- The pad bindings as LeanPad last saved or the player kept them. Profiles save these rather than the live ones, so a
+-- change from elsewhere, such as a switch of binding set or another addon, never quietly replaces a layout.
+local known
+function ns.SaveBindings()
+	SaveBindings(GetCurrentBindingSet())
+	known = padBindings()
+end
+function ns.KnownBindings() return known end
+
+function ns.Differs(a, b)
+	for key, value in pairs(a) do
+		if b[key] ~= value then return true end
+	end
+end
+
 -- Bar addons such as ElvUI point bar keys at their own buttons, which fire nothing on a bar they have turned off.
 -- Pad keys on Action Bars 2-8 get their own binding back as a priority override, so a press fires the Blizzard
 -- slot the crossbar shows, with or without a bar addon. Action Bar 1 stays theirs: with Blizzard's bar hidden,
@@ -103,7 +118,15 @@ local function claimPad()
 	end
 end
 claimer:RegisterEvent("UPDATE_BINDINGS")
-claimer:SetScript("OnEvent", claimPad)
+-- A frame on, LeanPad's own writes have saved: pad bindings that differ changed without it, so the player is told.
+claimer:SetScript("OnEvent", function()
+	claimPad()
+	RunNextFrame(function()
+		local live = padBindings()
+		known = known or live
+		if ns.Differs(known, live) or ns.Differs(live, known) then StaticPopup_Show("LEANPAD_CHANGED") end
+	end)
+end)
 
 -- The controller CVars, or the given set, and every pad binding, so putting it back leaves nothing of what came after.
 local function snapshot(cvars)
@@ -118,7 +141,7 @@ local function putBack(saved)
 	if saved.all then clearPad() end
 	for cvar, value in pairs(saved.cvars) do SetCVar(cvar, value) end
 	for key, action in pairs(saved.bindings) do ns.BindKey(key, action) end
-	SaveBindings(GetCurrentBindingSet())
+	ns.SaveBindings()
 end
 ns.Snapshot, ns.PutBack = snapshot, putBack
 
@@ -132,7 +155,7 @@ function ns.Apply()
 	clearPad()
 	for cvar, value in pairs(ns.CVARS) do SetCVar(cvar, value) end
 	for key, action in pairs(ns.BINDINGS) do ns.BindKey(key, action) end
-	SaveBindings(GetCurrentBindingSet())
+	ns.SaveBindings()
 	print("LeanPad: controller set up. Show Action Bars 2-4 to see the LT, RT and LT+RT layers. Undo reset brings back your previous layout.")
 end
 
@@ -171,27 +194,38 @@ function ns.ShowSetup()
 	StaticPopup_Show(ns.HasPadLayout() and "LEANPAD_SETUP_EXISTING" or "LEANPAD_SETUP")
 end
 
-StaticPopupDialogs.LEANPAD_SETUP_EXISTING = {
+-- LeanPad's dialogs wait for an answer, even while dead.
+function ns.Dialog(name, dialog)
+	dialog.timeout, dialog.whileDead = 0, true
+	StaticPopupDialogs[name] = dialog
+end
+
+ns.Dialog("LEANPAD_SETUP_EXISTING", {
 	text = "LeanPad found a controller layout already bound.\n\nKeep it, and LeanPad only makes sure the gamepad is on. Or switch to LeanPad's layout; yours is saved so Undo reset, or /lp undo, brings it back.",
 	button1 = "Keep my layout",
 	button2 = CANCEL,
 	button3 = "Use LeanPad layout",
 	OnAccept = function() ns.OutOfCombat(ns.KeepLayout) end,
 	OnAlt = function() ns.OutOfCombat(ns.Apply) end,
-	timeout = 0,
-	whileDead = true,
 	hideOnEscape = true,
-}
+})
 
-StaticPopupDialogs.LEANPAD_SETUP = {
+ns.Dialog("LEANPAD_SETUP", {
 	text = "Set up LeanPad?\n\nThis turns on the gamepad, makes LT and RT act as Shift and Ctrl, clears your controller bindings and binds the controller to Action Bars 1-4. Your current layout is saved first: Undo reset, or /lp undo, brings it back.",
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function() ns.OutOfCombat(ns.Apply) end,
-	timeout = 0,
-	whileDead = true,
 	hideOnEscape = true,
-}
+})
+
+-- No Escape: closing it unanswered would leave the profile and the live bindings apart.
+ns.Dialog("LEANPAD_CHANGED", {
+	text = "Your controller bindings changed outside LeanPad: a switch to or from character-specific key bindings, a reset or another addon.\n\nPut back the layout LeanPad last saved, or keep the new bindings?",
+	button1 = "Put mine back",
+	button2 = "Keep new",
+	OnAccept = function() ns.OutOfCombat(function() putBack({ cvars = {}, bindings = known, all = true }) end) end,
+	OnCancel = function() known = padBindings() end,
+})
 
 EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
 	if ns.db.prompted then return end

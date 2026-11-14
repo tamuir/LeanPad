@@ -69,6 +69,7 @@ describe("Profiles", function()
 			assert.is_nil(ns.db.padStyle)
 			assert.is_true(ns.db.prompted)
 			assert.same({ PAD1 = "JUMP" }, w.bindings)
+			assert.is_true(printed("LeanPad: your controller bindings had changed since profile Tank was saved; LeanPad put the profile back."))
 			assert.equal("1", w.cvars.SoftTargetFriend)
 			assert.same({}, w.placed) -- the slot already holds it
 			assert.equal(1.2, LeanPadCrossbar.scale)
@@ -107,6 +108,20 @@ describe("Profiles", function()
 		watcher():Fire("OnEvent", "PLAYER_LOGOUT")
 		assert.equal(1.1, ns.db.profiles.Default.settings.crossbarScale)
 		assert.is_false(ns.db.profiles.Default.slots[253][1])
+	end)
+
+	it("saves LeanPad's bindings, not ones changed from outside that the player hasn't kept", function()
+		local function bindingsUpdate()
+			for _, widget in ipairs(w.widgets) do
+				if rawget(widget, "events") and widget.events.UPDATE_BINDINGS then widget:Fire("OnEvent", "UPDATE_BINDINGS") end
+			end
+			wow.nextFrame()
+		end
+		bindingsUpdate()
+		w.bindings = {} -- such as a switch to an empty character binding set
+		bindingsUpdate()
+		watcher():Fire("OnEvent", "PLAYER_LOGOUT")
+		assert.equal("JUMP", ns.db.profiles.Default.bindings.PAD1)
 	end)
 
 	describe("managing", function()

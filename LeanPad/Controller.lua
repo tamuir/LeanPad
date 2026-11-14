@@ -260,7 +260,7 @@ end
 function ns.Assign(binding, action)
 	ns.OutOfCombat(function()
 		SetBinding(binding, action)
-		SaveBindings(GetCurrentBindingSet())
+		ns.SaveBindings()
 		ns.Saved()
 	end)
 end
@@ -279,7 +279,7 @@ function ns.SetLayerButton(cvar, key)
 		SetCVar(cvar, key)
 		if key ~= "none" then
 			for _, layer in ipairs(ns.Layers()) do SetBinding(layer.prefix .. key, nil) end
-			SaveBindings(GetCurrentBindingSet())
+			ns.SaveBindings()
 			print(("LeanPad: %s is now a layer button, so its own bindings were cleared."):format(ns.KeyName(key)))
 		end
 		ns.Saved()
@@ -335,7 +335,7 @@ function ns.EnsureSlot(binding)
 			slot = ns.SlotForCommand(command)
 			if slot and not C_ActionBar.HasAction(slot) and not padBound(command) and not ns.BarOff(command) then
 				SetBinding(binding, command)
-				SaveBindings(GetCurrentBindingSet())
+				ns.SaveBindings()
 				return slot
 			end
 		end

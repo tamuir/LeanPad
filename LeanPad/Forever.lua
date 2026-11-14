@@ -190,7 +190,7 @@ wrap("SetLayerButton", function(_, action, key)
 			remember(key)
 			SetBinding(key, action, CONTEXT)
 		end
-		SaveBindings(GetCurrentBindingSet())
+		ns.SaveBindings()
 		ns.Saved()
 	end)
 end)
@@ -211,7 +211,7 @@ wrap("Assign", function(_, binding, action)
 			remember(key)
 			SetBinding(key, nil, CONTEXT)
 			SetBinding(key, action)
-			SaveBindings(GetCurrentBindingSet())
+			ns.SaveBindings()
 			return ns.Saved()
 		end
 		local slot = ns.SlotForCommand(ns.BindingAction(binding))
@@ -239,19 +239,17 @@ wrap("Apply", function()
 		SetBinding(key, action ~= "" and action or nil, CONTEXT)
 	end
 	ns.db.contextDefaults = nil
-	SaveBindings(GetCurrentBindingSet())
+	ns.SaveBindings()
 	print("LeanPad: Blizzard's gamepad buttons are back. Actions on your bars stay where they are.")
 end)
 
-StaticPopupDialogs.LEANPAD_RESET_GAMEPAD = {
+ns.Dialog("LEANPAD_RESET_GAMEPAD", {
 	text = "Put back Blizzard's gamepad buttons?\n\nThis undoes every button LeanPad changed. Actions on your gamepad bars stay where they are.",
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function() ns.OutOfCombat(ns.Apply) end,
-	timeout = 0,
-	whileDead = true,
 	hideOnEscape = true,
-}
+})
 
 -- Profiles keep context bindings beside the plain ones, marked, and every slot of the gamepad bars.
 wrap("ExtraPadBindings", function(_, found)

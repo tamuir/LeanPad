@@ -89,6 +89,7 @@ end
 -- and class that uses it; withSlots adds this spec's to the ones given.
 local function capture(slots, withSlots)
 	local profile = ns.Snapshot(CVARS)
+	profile.bindings = ns.KnownBindings() or profile.bindings
 	profile.settings = {}
 	for key, value in pairs(ns.db) do
 		if not BOOKKEEPING[key] then profile.settings[key] = type(value) == "table" and CopyTable(value) or value end
@@ -109,12 +110,6 @@ local function save(withSlots)
 	if old then ns.db.profiles[name] = capture(old.slots, withSlots) end
 end
 
-local function differs(a, b)
-	for key, value in pairs(a) do
-		if b[key] ~= value then return true end
-	end
-end
-
 -- Makes a profile the live setup. Bindings and CVars are written only when they differ, so logging in on an
 -- unchanged profile writes nothing.
 local function apply(name, withSlots)
@@ -124,8 +119,9 @@ local function apply(name, withSlots)
 	end
 	for key, value in pairs(CopyTable(profile.settings)) do ns.db[key] = value end
 	local live = ns.Snapshot(CVARS)
-	if differs(profile.bindings, live.bindings) or differs(live.bindings, profile.bindings) or differs(profile.cvars, live.cvars) then
+	if ns.Differs(profile.bindings, live.bindings) or ns.Differs(live.bindings, profile.bindings) or ns.Differs(profile.cvars, live.cvars) then
 		ns.PutBack(profile)
+		print(("LeanPad: your controller bindings had changed since profile %s was saved; LeanPad put the profile back."):format(name))
 	end
 	local skipped = withSlots and restoreSlots(profile.slots[specID()]) or 0
 	if skipped > 0 then
