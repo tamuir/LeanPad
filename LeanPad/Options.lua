@@ -67,26 +67,16 @@ local function deviceOptions()
 	return options
 end
 
--- Auto names the style the current spec plays.
-local function playstyleOptions()
-	local options, spec = {}, ns.SpecStyle()
-	for _, style in ipairs(PLAYSTYLES) do
-		local label = style[2]
-		if style[1] == "auto" and spec then label = ("Auto (%s)"):format(ns.LabelOf(PLAYSTYLES, spec)) end
-		table.insert(options, { style[1], label })
+-- Auto names what it picks now: the current spec's play style, none before a spec is chosen, or the pad in use.
+local function withAuto(options, picked)
+	local list = {}
+	for _, option in ipairs(options) do
+		table.insert(list, { option[1], option[1] == "auto" and picked and ("Auto (%s)"):format(ns.LabelOf(options, picked)) or option[2] })
 	end
-	return options
+	return list
 end
-
-local function styleOptions()
-	local options = {}
-	for _, style in ipairs(STYLES) do
-		local label = style[2]
-		if style[1] == "auto" then label = ("Auto (%s)"):format(ns.LabelOf(STYLES, ns.DetectedStyle())) end
-		table.insert(options, { style[1], label })
-	end
-	return options
-end
+local function playstyleOptions() return withAuto(PLAYSTYLES, ns.SpecStyle()) end
+local function styleOptions() return withAuto(STYLES, ns.DetectedStyle()) end
 
 -- A dropdown over value/label options; options may be a function when the choices depend on the pads connected.
 local function choice(options, current, set)
@@ -104,10 +94,6 @@ end
 
 local function cvarChoice(options, cvar, default)
 	return choice(options, function() return GetCVar(cvar) or default end, function(value) ns.WriteCVar(cvar, value) end)
-end
-
-local function keyChoice(keys, cvar)
-	return choice(ns.KeyOptions(keys), function() return GetCVar(cvar) or "none" end, function(value) ns.WriteCVar(cvar, value) end)
 end
 
 -- Where Toggle gamepad cursor puts the cursor, as an x, y offset from the screen's centre in UI units, the way
@@ -329,7 +315,7 @@ local function buildRight(x, y)
 	table.insert(controls, { Refresh = function() warning:SetShown(not ns.CursorReachable()) end })
 	controls[#controls].Refresh()
 	for _, click in ipairs(CLICKS) do
-		y = row(x, y, click[2], keyChoice(ns.CLICK_KEYS, click[1]))
+		y = row(x, y, click[2], cvarChoice(ns.KeyOptions(ns.CLICK_KEYS), click[1], "none"))
 	end
 	y = row(x, y, "Speed", cvarChoice(SPEEDS, "GamePadCursorSpeedMax", "1"))
 	y = row(x, y, "Toggle starts it at x, y", cursorStartInput())
