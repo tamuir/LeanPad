@@ -4,6 +4,18 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+## [0.8.1] - 2026-11-15
+
+### Fixed
+
+- **The "bindings changed outside LeanPad" pop-up no longer appears at every login and reload.** While the game loads, it can't yet list your bindings, and LeanPad read that as a controller with nothing bound. It now takes its first look once they have loaded.
+- **LeanPad no longer puts your profile back over your bindings at every login.** The login check ran while the game was loading too, so it always found a difference and rewrote your bindings from the profile. It now runs once they can be read, and acts only when they really differ.
+- **A profile that 0.8.0 saved without bindings no longer clears the controller.** It takes your current bindings instead.
+
+### Changed
+
+- **The notice names the buttons that changed**, in chat beside the pop-up, with what each did before and does now.
+
 ## [0.8.0] - 2026-11-15
 
 ### Added
