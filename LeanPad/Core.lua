@@ -45,6 +45,8 @@ SlashCmdList.LEANPAD = function(msg)
 		ns.OutOfCombat(ns.UndoReset)
 	elseif msg == "settings" then
 		ns.OpenOptions()
+	elseif msg:find("^party") then
+		ns.SetupParty(msg:match("^party%s*(.-)%s*$"))
 	elseif msg:find("^profile ") then
 		ns.SwitchProfile(msg:match("^profile%s+(.-)%s*$"))
 	else

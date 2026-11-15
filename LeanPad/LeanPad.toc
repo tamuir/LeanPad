@@ -20,4 +20,5 @@ Profiles.lua
 Settings.lua
 Quests.lua
 Popups.lua
+Party.lua
 Forever.lua [AllowLoadGameType forever, camelot]

@@ -230,7 +230,7 @@ function M.reset()
 	M.state = w
 
 	LeanPadDB, LeanPadCharDB = nil, nil
-	LeanPadControllerFrame, LeanPadCrossbar, LeanPadDialogue = nil, nil, nil
+	LeanPadControllerFrame, LeanPadCrossbar, LeanPadDialogue, LeanPadPartyRing = nil, nil, nil, nil
 	C_GamepadUI, InputUtil, GamepadMode, GamepadMainActionBarFrame, GamepadActionBarBindingUtil, C_CVar, hooksecurefunc = nil, nil, nil, nil, nil, nil, nil
 	SLASH_LEANPAD1 = nil
 	SlashCmdList = {}
@@ -521,9 +521,18 @@ function M.reset()
 	dialog("LFGDungeonReadyDialog", "LFGDungeonReadyDialogEnterDungeonButton", "LFGDungeonReadyDialogLeaveQueueButton")
 	dialog("ReadyCheckFrame", "ReadyCheckFrameYesButton", "ReadyCheckFrameNoButton")
 	-- The NPC talked to, as the unit tokens npc and questnpc; w.quest.npc nil when there is none, as for a quest from an item.
-	UnitExists = function() return w.quest.npc ~= nil end
+	-- The group, in w.group by unit token; nil when alone. Other units are the NPC below.
+	local function member(unit) return w.group and (unit == "player" or tostring(unit):find("^party")) end
+	IsInGroup = function() return w.group ~= nil end
+	UnitExists = function(unit)
+		if member(unit) then return w.group[unit] ~= nil end
+		return w.quest.npc ~= nil
+	end
 	UnitIsGameObject = function() return w.quest.object == true end
-	UnitName = function() return w.quest.npc end
+	UnitName = function(unit)
+		if member(unit) then return w.group[unit], "Realm" end
+		return w.quest.npc
+	end
 	SetPortraitTexture = function(texture, unit) texture.portrait = unit end
 	GetMoneyString = function(money) return money .. "c" end
 	QuestTitleFont = { GetFont = function() return "Fonts\\MORPHEUS.TTF", 24, "" end }

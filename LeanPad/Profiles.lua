@@ -11,7 +11,7 @@ local BOOKKEEPING = { prompted = true, backup = true, undo = true, formPages = t
 -- the pads change could leave no controller working.
 local CVARS = {
 	GamePadEmulateAlt = true, GamePadCursorSpeedMax = true, GamePadCursorAutoEnable = true,
-	GamePadCursorAutoDisableSticks = true, GamePadTouchCursorEnable = true,
+	GamePadCursorAutoDisableSticks = true, GamePadTouchCursorEnable = true, GamePadStickAxisButtons = true,
 }
 for cvar in pairs(ns.CVARS) do CVARS[cvar] = true end
 for _, preset in pairs(ns.PLAYSTYLES) do
