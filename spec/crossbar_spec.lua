@@ -31,6 +31,26 @@ describe("Crossbar", function()
 	after_each(wow.restore)
 
 	describe("layout", function()
+		it("says why when no button is bound to an action, and names the layer again once one is", function()
+			ns.SetCrossbarShown(true)
+			w.bindings = {}
+			LeanPadCrossbar:Fire("OnEvent", "MODIFIER_STATE_CHANGED")
+			assert.equal("No controller buttons are bound to actions. Type /lp to set them up.", label(1))
+			w.bindings.PAD3 = "ACTIONBUTTON1"
+			LeanPadCrossbar:Fire("OnEvent", "MODIFIER_STATE_CHANGED")
+			assert.equal("", label(1))
+		end)
+
+		it("answers a burst of events with one refresh, a frame on", function()
+			ns.SetCrossbarShown(true)
+			wow.nextFrame()
+			for _ = 1, 20 do LeanPadCrossbar:Fire("OnEvent", "ACTIONBAR_SLOT_CHANGED") end
+			assert.equal(1, #w.nextFrame)
+			wow.nextFrame()
+			LeanPadCrossbar:Fire("OnEvent", "ACTIONBAR_SLOT_CHANGED")
+			assert.equal(1, #w.nextFrame)
+		end)
+
 		it("covers the D-pad, face buttons, shoulders, triggers and stick clicks without overlap", function()
 			local keys = {}
 			for key in pairs(ns.CROSSBAR) do table.insert(keys, key) end
@@ -132,14 +152,17 @@ describe("Crossbar", function()
 		it("stack the sockets between the diamonds on the diamonds' centre line, only the shown ones", function()
 			w.bindings["SHIFT-PADRSHOULDER"] = "ACTIONBUTTON1" -- one socket sits level with the diamonds
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, 0 }, buttonFor("PADRSHOULDER").point)
 			w.bindings["SHIFT-PADRSTICK"] = "ACTIONBUTTON1" -- two straddle the line
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, 30 }, buttonFor("PADRSHOULDER").point)
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, -30 }, buttonFor("PADRSTICK").point)
 			w.cvars.GamePadEmulateCtrl = "none" -- RT is a plain button again: three fill the column
 			w.bindings.PADRTRIGGER = "ACTIONBUTTON1"
 			bar:Fire("OnEvent", "CVAR_UPDATE")
+			wow.nextFrame()
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, 60 }, buttonFor("PADRSHOULDER").point)
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, 0 }, buttonFor("PADRTRIGGER").point)
 			assert.same({ "CENTER", clusters()[1], "CENTER", 39, -60 }, buttonFor("PADRSTICK").point)
@@ -160,15 +183,18 @@ describe("Crossbar", function()
 		it("never show a layer button, even with a stale binding on it", function()
 			w.bindings.PADRTRIGGER = "ACTIONBUTTON1"
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.is_false(buttonFor("PADRTRIGGER"):IsShown())
 			w.cvars.GamePadEmulateCtrl = "none" -- no longer a layer button: its own action shows
 			bar:Fire("OnEvent", "CVAR_UPDATE")
+			wow.nextFrame()
 			assert.is_true(buttonFor("PADRTRIGGER"):IsShown())
 		end)
 
 		it("show a button with nothing on the held layer as a faint empty slot", function()
 			w.bindings["SHIFT-PADLSHOULDER"] = "MULTIACTIONBAR1BUTTON1" -- a bar action on LT; on Base, a bar button the fake lacks
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			local lb = buttonFor("PADLSHOULDER")
 			assert.is_true(lb:IsShown())
 			assert.equal(ns.CROSSBAR_EMPTY_ALPHA, lb.alpha)
@@ -180,6 +206,7 @@ describe("Crossbar", function()
 			assert.is_false(buttonFor("PADLSHOULDER"):IsShown())
 			w.bindings["CTRL-PADLSHOULDER"] = "ACTIONBUTTON1"
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.is_true(buttonFor("PADLSHOULDER"):IsShown())
 		end)
 
@@ -208,6 +235,7 @@ describe("Crossbar", function()
 			local getText = _G.GetBindingText -- busted sandboxes spec globals; the addon reads _G
 			_G.GetBindingText = function(key) return "|A:Gamepad_Shp_" .. key .. "_64:24:24|a" end
 			bar:Fire("OnEvent", "GAME_PAD_ACTIVE_CHANGED")
+			wow.nextFrame()
 			assert.is_true(buttonFor("PAD3").Glyph:IsShown())
 			assert.equal("Gamepad_Shp_PAD3_64", buttonFor("PAD3").Glyph.atlas)
 			_G.GetBindingText = getText
@@ -279,6 +307,7 @@ describe("Crossbar", function()
 		it("blink on an empty slot or a command too", function()
 			w.bindings.PAD4 = "ACTIONBUTTON1" -- an empty slot
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			bar.Pad:Fire("OnGamePadButtonDown", "PAD4")
 			bar.Pad:Fire("OnGamePadButtonDown", "PAD1") -- Jump, on no bar
 			assert.equal(1, buttonFor("PAD4").Blink.plays)
@@ -305,6 +334,7 @@ describe("Crossbar", function()
 		it("show countdown numbers when Blizzard's countdown option is on", function()
 			w.cvars.countdownForCooldowns = "1"
 			bar:Fire("OnEvent", "CVAR_UPDATE")
+			wow.nextFrame()
 			assert.is_false(buttonFor("PAD3").Cooldown.hideNumbers)
 		end)
 
@@ -334,12 +364,14 @@ describe("Crossbar", function()
 			bar:Fire("OnEvent", "ACTION_RANGE_CHECK_UPDATE", 61, false, true)
 			w.bindings.PAD3 = "ACTIONBUTTON1" -- an empty slot never stays red
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.same(ns.IN_RANGE, button.Icon.vertexColor)
 		end)
 
 		it("empty a button whose action is gone", function()
 			w.bindings.PAD3 = "ACTIONBUTTON1" -- a real button whose slot is empty
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			local button = buttonFor("PAD3")
 			assert.is_nil(button.slot)
 			assert.is_nil(button.Icon.texture)
@@ -393,10 +425,12 @@ describe("Crossbar", function()
 		end)
 
 		it("keep refreshing the other buttons when one errors, and report it", function()
+			wow.nextFrame() -- the refresh queued as the bar first showed
 			w.bindings.PAD4 = "MULTIACTIONBAR1BUTTON1"
 			local getCount = C_ActionBar.GetActionDisplayCount
 			C_ActionBar.GetActionDisplayCount = function() error("boom") end
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.equal(2, #w.errors)
 			assert.equal(135808, buttonFor("PAD3").Icon.texture)
 			assert.equal(135808, buttonFor("PAD4").Icon.texture)
@@ -409,6 +443,7 @@ describe("Crossbar", function()
 			local hasAction = C_ActionBar.HasAction
 			C_ActionBar.HasAction = function() error("boom") end
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.is_nil(buttonFor("PAD3").slot)
 			assert.is_nil(buttonFor("PAD3").Icon.texture)
 			assert.is_true(#w.errors > 0) -- one per socket on a bar slot
@@ -494,6 +529,7 @@ describe("Crossbar", function()
 		it("hides clusters for layers that don't exist", function()
 			w.cvars.GamePadEmulateCtrl = "none"
 			bar:Fire("OnEvent", "CVAR_UPDATE")
+			wow.nextFrame()
 			local all = clusters()
 			assert.is_true(all[2]:IsShown())
 			assert.is_false(all[3]:IsShown())
@@ -764,6 +800,7 @@ describe("Crossbar", function()
 			w.combat = true
 			ns.SetCrossbarMouse(true)
 			bar:Fire("OnEvent", "UPDATE_BINDINGS")
+			wow.nextFrame()
 			assert.is_false(twinFor("PAD3"):IsShown())
 			w.combat = false
 			wow.fire("PLAYER_REGEN_ENABLED")
@@ -936,6 +973,7 @@ describe("Crossbar", function()
 				w.bindings["SHIFT-PADRSHOULDER"], w.bindings["SHIFT-PADRSTICK"] = "ACTIONBUTTON1", "ACTIONBUTTON1"
 				ns.db.socketPoints.PADRSTICK = { 90, -90 }
 				bar:Fire("OnEvent", "UPDATE_BINDINGS")
+				wow.nextFrame()
 				assert.same({ "CENTER", set, "CENTER", 39, 0 }, buttonFor("PADRSHOULDER").point)
 				assert.same({ "CENTER", set, "CENTER", 90, -90 }, buttonFor("PADRSTICK").point)
 				ns.db.crossbarPoint = { "TOPLEFT", "TOPLEFT", 300, -400 }

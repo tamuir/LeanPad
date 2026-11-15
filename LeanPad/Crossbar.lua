@@ -502,13 +502,15 @@ function ns.RefreshCrossbar()
 	local allLayers = s.all
 	local hideNumbers = not GetCVarBool("countdownForCooldowns")
 	local used = actionKeys(layers)
+	-- With nothing to draw, the bar says why instead of standing empty.
+	local empty = not next(used) and "No controller buttons are bound to actions. Type /lp to set them up."
 	for index, cluster in ipairs(clusters) do
 		local layer = allLayers and layers[index] or (index == 1 and heldLayer(layers, held)) or nil
 		cluster.frame:SetShown(layer ~= nil)
 		if layer then
 			placeCluster(cluster, index, allLayers and layer.prefix == held or not allLayers and (not s.quiet or held ~= ""))
 			cluster.frame.prefix = layer.prefix
-			cluster.Label:SetText(layer.prefix ~= "" and layer.label or "")
+			cluster.Label:SetText(index == 1 and empty or layer.prefix ~= "" and layer.label or "")
 			for key, button in pairs(cluster.buttons) do
 				button:SetShown(used[key] == true)
 				shape(button, s.square)
@@ -520,15 +522,27 @@ function ns.RefreshCrossbar()
 	syncTwins()
 end
 
+-- Events come in bursts, every slot on a spec swap, so they share one refresh a frame on; by then Blizzard's own
+-- handlers have re-pointed its buttons. Only a layer press redraws at once, so the held layer shows without delay.
+local queued
+local function refreshSoon()
+	if queued then return end
+	queued = true
+	RunNextFrame(function()
+		queued = nil
+		ns.RefreshCrossbar()
+	end)
+end
+
 local function onEvent(_, event)
 	if STATE_EVENTS[event] then
 		eachButton(function(button)
 			if button.slot then securecallfunction(updateState, button) end
 		end)
-	elseif PAGE_EVENTS[event] then
-		RunNextFrame(ns.RefreshCrossbar) -- read Blizzard's buttons once its own handlers have run
-	else
+	elseif event == "MODIFIER_STATE_CHANGED" then
 		ns.RefreshCrossbar()
+	else
+		refreshSoon()
 	end
 end
 
