@@ -6,6 +6,12 @@ Lean controller play on World of Warcraft's own gamepad layer, for retail and Wo
 
 WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off.
 
+## New in 0.8.0
+
+- **LeanPad says when your bindings change outside it.** A switch of binding set, a reset or another addon can replace your controller bindings without a word. LeanPad now asks whether to put your layout back or keep the new one, and your profiles keep the layout LeanPad last saved.
+- **An empty crossbar says why**, and LeanPad warns at login when ConsolePort is on as well.
+- **A lighter crossbar.** A spec swap redraws it once, not once per bar slot.
+
 ## New in 0.7.1
 
 - **Spells find a slot when a bar is full.** Pick a spell for a button and LeanPad puts it on a free slot of the layer's own bar, or of Action Bars 5-8 when that bar is full.
