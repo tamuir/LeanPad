@@ -1,37 +1,20 @@
-# LeanPad
+# LeanPad: play World of Warcraft with a controller
 
-Lean controller play on World of Warcraft's own gamepad layer, for retail and WoW: Forever.
+**Play WoW with an Xbox or PlayStation controller**, on retail and WoW: Forever. One-click gamepad setup, a visual controller editor that binds spells to buttons, a crossbar of three action-bar layers, party targeting, and quests and NPC dialogue answered from the pad. Light, combat-safe, and built on Blizzard's own gamepad support.
 
 **On WoW: Forever?** Turn off Blizzard's Gamepad UI for the full experience. [See what changes](#wow-forever).
 
-WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off.
+WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off. It works with Blizzard's bars, ElvUI or any other bar addon.
 
 ## New in 0.9.0
 
 - **Party targeting.** Hold the Layer 3 button and press a direction on the right stick or D-pad to target a party member, while a ring names who is where. Turn it on under *Party targeting* in `/lp settings`. The dialogue window also lists required currencies on a quest's progress page and no longer breaks after an NPC whose name the game hides.
 
-## New in 0.8.1
+Earlier releases: see the [changelog](https://github.com/tamuir/LeanPad/blob/main/CHANGELOG.md).
 
-- **No more false alarm at login.** 0.8.0 showed its "bindings changed" pop-up on every login and reload, and put your profile back each time. Both are fixed, and the notice now names in chat which buttons changed.
+## Quests and NPC dialogue from the pad
 
-## New in 0.8.0
-
-- **LeanPad says when your bindings change outside it.** A switch of binding set, a reset or another addon can replace your controller bindings without a word. LeanPad now asks whether to put your layout back or keep the new one, and your profiles keep the layout LeanPad last saved.
-- **An empty crossbar says why**, and LeanPad warns at login when ConsolePort is on as well.
-- **A lighter crossbar.** A spec swap redraws it once, not once per bar slot.
-
-## New in 0.7.1
-
-- **Spells find a slot when a bar is full.** Pick a spell for a button and LeanPad puts it on a free slot of the layer's own bar, or of Action Bars 5-8 when that bar is full.
-- **The editor says why a change didn't happen**, in red in its footer, such as a bar with no free slot or a change tried in combat. With the editor closed, Blizzard's red error text says it.
-- *Auto-run* and *Toggle gamepad cursor* show their icons again.
-
-## New in 0.7.0
-
-- **Talk to NPCs and do quests from the pad.** LeanPad's own dialogue window, made for reading: the NPC in 3D beside their words, which write themselves in, rewards as tiles in their quality's colour, and A, B and the D-pad to answer. Put it in any of nine places on screen, at the size and text size you like.
-- **Pop-ups from the pad.** A, B, X and Y press the buttons of Blizzard's pop-ups, the dungeon queue pop and ready checks, named under each one, such as Release Spirit and Recap when you die.
-- **Settings in two tabs**, *Controls* and *Dialogue*, and an (i) on every setting that says what it does, with a live preview of the dialogue window.
-- **WoW: Forever support**, plus fixes: Edit Mode can reach the frames under the crossbar again, and the cursor toggle no longer errors.
+LeanPad's own dialogue window, made for reading: the NPC in 3D beside their words, rewards as tiles in their quality's colour, and A, B and the D-pad to answer. A, B, X and Y also press the buttons of Blizzard's pop-ups, the dungeon queue and ready checks.
 
 ![LeanPad's dialogue window: an NPC in 3D beside their words](https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/dialogue-npc.png)
 
