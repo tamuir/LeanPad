@@ -133,13 +133,20 @@ end
 claimer:RegisterEvent("UPDATE_BINDINGS")
 claimer:RegisterEvent("BINDINGS_LOADED")
 -- A frame on, LeanPad's own writes have saved: pad bindings that differ changed without it, so the player is told.
--- The saved bindings can arrive after PLAYER_ENTERING_WORLD; until BINDINGS_LOADED, the pad's are not yet the
--- player's and nothing is compared.
+-- Nothing is compared before BINDINGS_LOADED, and the first look is a frame after it: while the UI loads the
+-- client fires dozens of these events and GetBinding lists no keys yet, though GetBindingAction answers.
+local loaded, queued
 claimer:SetScript("OnEvent", function(_, event)
-	if event == "BINDINGS_LOADED" then known = known or padBindings() end
+	loaded = loaded or event == "BINDINGS_LOADED"
 	claimPad()
+	if queued then return end
+	queued = true
 	RunNextFrame(function()
-		local changed = known and changes(known, padBindings()) or {}
+		queued = nil
+		if not loaded then return end
+		local live = padBindings()
+		known = known or live
+		local changed = changes(known, live)
 		if not changed[1] then return end
 		print("LeanPad: controller bindings changed outside LeanPad. " .. table.concat(changed, ", ", 1, math.min(#changed, 8)))
 		StaticPopup_Show("LEANPAD_CHANGED")

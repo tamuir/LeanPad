@@ -332,11 +332,10 @@ describe("Setup", function()
 
 			it("says nothing while the saved bindings are still loading, and starts from them once they have", function()
 				local saved = w.bindings
-				w.bindings = {}
-				bindingsUpdate()
-				w.bindings = saved
+				w.bindings = {} -- as GetBinding lists them while the UI loads: no keys at all
 				bindingsUpdate()
 				loaded()
+				w.bindings = saved
 				wow.nextFrame()
 				assert.same({}, w.popups)
 				w.bindings.PAD1 = nil
