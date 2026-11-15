@@ -10,6 +10,10 @@ WoW already has a full gamepad layer built in: controller buttons are ordinary k
 
 Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and the layout keeps working if you disable the addon.
 
+### New in 0.8.1
+
+- **No more false alarm at login.** 0.8.0 showed its "bindings changed" pop-up on every login and reload, and put your profile back each time. Both are fixed, and the notice now names in chat which buttons changed. See the [changelog](CHANGELOG.md).
+
 ### New in 0.8.0
 
 - **LeanPad says when your bindings change outside it.** A switch of binding set, a reset or another addon can replace your controller bindings without a word. LeanPad now asks whether to put your layout back or keep the new one, and your profiles keep the layout LeanPad last saved.
