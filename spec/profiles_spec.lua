@@ -111,15 +111,15 @@ describe("Profiles", function()
 	end)
 
 	it("saves LeanPad's bindings, not ones changed from outside that the player hasn't kept", function()
-		local function bindingsUpdate()
+		local function bindings(event)
 			for _, widget in ipairs(w.widgets) do
-				if rawget(widget, "events") and widget.events.UPDATE_BINDINGS then widget:Fire("OnEvent", "UPDATE_BINDINGS") end
+				if rawget(widget, "events") and widget.events[event] then widget:Fire("OnEvent", event) end
 			end
 			wow.nextFrame()
 		end
-		bindingsUpdate()
+		bindings("BINDINGS_LOADED")
 		w.bindings = {} -- such as a switch to an empty character binding set
-		bindingsUpdate()
+		bindings("UPDATE_BINDINGS")
 		watcher():Fire("OnEvent", "PLAYER_LOGOUT")
 		assert.equal("JUMP", ns.db.profiles.Default.bindings.PAD1)
 	end)

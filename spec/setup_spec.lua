@@ -281,11 +281,11 @@ describe("Setup", function()
 	end)
 
 	describe("bar addon overrides", function()
-		-- The frame that listens for UPDATE_BINDINGS alone.
+		-- The frame that listens for bindings loading and changing, and nothing else.
 		local function claimer()
 			for _, widget in ipairs(w.widgets) do
 				local events = rawget(widget, "events")
-				if events and events.UPDATE_BINDINGS and count(events) == 1 then return widget end
+				if events and events.UPDATE_BINDINGS and count(events) == 2 then return widget end
 			end
 		end
 
@@ -327,9 +327,28 @@ describe("Setup", function()
 				wow.nextFrame()
 			end
 
-			before_each(function() -- the bindings at login are LeanPad's starting point; a reload fires no UPDATE_BINDINGS
-				ns.db.prompted = true
-				wow.fire("PLAYER_ENTERING_WORLD")
+			-- The bindings as they finish loading are LeanPad's starting point.
+			local function loaded() claimer():Fire("OnEvent", "BINDINGS_LOADED") end
+
+			it("says nothing while the saved bindings are still loading, and starts from them once they have", function()
+				local saved = w.bindings
+				w.bindings = {}
+				bindingsUpdate()
+				w.bindings = saved
+				bindingsUpdate()
+				loaded()
+				wow.nextFrame()
+				assert.same({}, w.popups)
+				w.bindings.PAD1 = nil
+				loaded() -- a second load, such as a switch of binding set, is a change like any other
+				wow.nextFrame()
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+			end)
+
+			describe("once loaded", function()
+			before_each(function()
+				loaded()
+				wow.nextFrame()
 			end)
 
 			it("says so, and puts LeanPad's layout back on request", function()
@@ -360,6 +379,7 @@ describe("Setup", function()
 				ns.Apply()
 				bindingsUpdate()
 				assert.same({}, w.popups)
+			end)
 			end)
 		end)
 	end)

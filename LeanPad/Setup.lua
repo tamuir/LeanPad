@@ -131,13 +131,15 @@ local function claimPad()
 	end
 end
 claimer:RegisterEvent("UPDATE_BINDINGS")
+claimer:RegisterEvent("BINDINGS_LOADED")
 -- A frame on, LeanPad's own writes have saved: pad bindings that differ changed without it, so the player is told.
-claimer:SetScript("OnEvent", function()
+-- The saved bindings can arrive after PLAYER_ENTERING_WORLD; until BINDINGS_LOADED, the pad's are not yet the
+-- player's and nothing is compared.
+claimer:SetScript("OnEvent", function(_, event)
+	if event == "BINDINGS_LOADED" then known = known or padBindings() end
 	claimPad()
 	RunNextFrame(function()
-		local live = padBindings()
-		known = known or live
-		local changed = changes(known, live)
+		local changed = known and changes(known, padBindings()) or {}
 		if not changed[1] then return end
 		print("LeanPad: controller bindings changed outside LeanPad. " .. table.concat(changed, ", ", 1, math.min(#changed, 8)))
 		StaticPopup_Show("LEANPAD_CHANGED")
@@ -244,7 +246,6 @@ ns.Dialog("LEANPAD_CHANGED", {
 })
 
 EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
-	known = known or padBindings() -- a reload fires no UPDATE_BINDINGS to start from
 	if ns.db.prompted then return end
 	ns.db.prompted = true
 	ns.ShowSetup()
