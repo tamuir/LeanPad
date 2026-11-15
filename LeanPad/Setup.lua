@@ -104,6 +104,19 @@ function ns.Differs(a, b)
 	end
 end
 
+-- Each pad key that differs, as its old action and its new one, so the player sees what the pop-up is about.
+local function changes(old, new)
+	local lines = {}
+	for key, action in pairs(old) do
+		if new[key] ~= action then table.insert(lines, ("%s: %s -> %s"):format(key, action, new[key] or "nothing")) end
+	end
+	for key, action in pairs(new) do
+		if not old[key] then table.insert(lines, ("%s: nothing -> %s"):format(key, action)) end
+	end
+	table.sort(lines)
+	return lines
+end
+
 -- Bar addons such as ElvUI point bar keys at their own buttons, which fire nothing on a bar they have turned off.
 -- Pad keys on Action Bars 2-8 get their own binding back as a priority override, so a press fires the Blizzard
 -- slot the crossbar shows, with or without a bar addon. Action Bar 1 stays theirs: with Blizzard's bar hidden,
@@ -124,7 +137,10 @@ claimer:SetScript("OnEvent", function()
 	RunNextFrame(function()
 		local live = padBindings()
 		known = known or live
-		if ns.Differs(known, live) or ns.Differs(live, known) then StaticPopup_Show("LEANPAD_CHANGED") end
+		local changed = changes(known, live)
+		if not changed[1] then return end
+		print("LeanPad: controller bindings changed outside LeanPad. " .. table.concat(changed, ", ", 1, math.min(#changed, 8)))
+		StaticPopup_Show("LEANPAD_CHANGED")
 	end)
 end)
 

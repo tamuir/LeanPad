@@ -337,6 +337,7 @@ describe("Setup", function()
 				w.bindings.PAD1, w.bindings.PAD2 = nil, "SOME_ADDON_COMMAND"
 				bindingsUpdate()
 				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+				assert.same({ "LeanPad: controller bindings changed outside LeanPad. PAD1: JUMP -> nothing, PAD2: nothing -> SOME_ADDON_COMMAND" }, w.printed)
 				local dialog = StaticPopupDialogs.LEANPAD_CHANGED
 				assert.is_nil(dialog.hideOnEscape)
 				dialog.OnAccept()
