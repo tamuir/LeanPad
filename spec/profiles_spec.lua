@@ -183,6 +183,7 @@ describe("Profiles", function()
 			ns.NewProfile("Healer")
 			ns.db.crossbarScale = 1.2
 			w.bindings.PAD1 = nil
+			ns.SaveBindings() -- unbound through LeanPad, so the profile takes it
 			w.cvars.SoftTargetFriend = "1"
 			w.actions[61] = { kind = "item", id = 5512 }
 			w.actions[1] = nil

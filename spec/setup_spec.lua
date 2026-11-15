@@ -327,7 +327,10 @@ describe("Setup", function()
 				wow.nextFrame()
 			end
 
-			before_each(bindingsUpdate) -- the bindings as they load are LeanPad's starting point
+			before_each(function() -- the bindings at login are LeanPad's starting point; a reload fires no UPDATE_BINDINGS
+				ns.db.prompted = true
+				wow.fire("PLAYER_ENTERING_WORLD")
+			end)
 
 			it("says so, and puts LeanPad's layout back on request", function()
 				assert.same({}, w.popups)

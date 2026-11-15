@@ -228,6 +228,7 @@ ns.Dialog("LEANPAD_CHANGED", {
 })
 
 EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
+	known = known or padBindings() -- a reload fires no UPDATE_BINDINGS to start from
 	if ns.db.prompted then return end
 	ns.db.prompted = true
 	ns.ShowSetup()
