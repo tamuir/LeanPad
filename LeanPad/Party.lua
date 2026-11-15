@@ -35,10 +35,12 @@ function ns.SetupParty(style)
 	end)
 end
 
-local function active()
-	for _, keys in pairs(STYLES) do
-		if GetBindingAction("ALT-" .. keys[1]) == COMMANDS[1] then return true end
+-- The style bound now, read from the bindings so the settings page and the ring follow whatever set them.
+function ns.PartyStyle()
+	for style, keys in pairs(STYLES) do
+		if GetBindingAction("ALT-" .. keys[1]) == COMMANDS[1] then return style end
 	end
+	return "off"
 end
 
 local ring
@@ -63,7 +65,7 @@ end
 local watcher = CreateFrame("Frame")
 watcher:RegisterEvent("MODIFIER_STATE_CHANGED")
 watcher:SetScript("OnEvent", function()
-	if not (IsAltKeyDown() and IsInGroup() and active()) then
+	if not (IsAltKeyDown() and IsInGroup() and ns.PartyStyle() ~= "off") then
 		if ring then ring:Hide() end
 		return
 	end

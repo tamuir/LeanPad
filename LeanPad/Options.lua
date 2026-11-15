@@ -15,6 +15,7 @@ local CROSSBARS = {
 local SCALES = { { "0.6", "60%" }, { "0.8", "80%" }, { "1", "100%" }, { "1.2", "120%" } }
 local OPACITIES = { { "1", "100%" }, { "0.8", "80%" }, { "0.6", "60%" }, { "0.4", "40%" } }
 local PLAYSTYLES = { { "manual", "Keep my own settings" }, { "auto", "Auto" }, { "tank", "Tank" }, { "melee", "Melee" }, { "ranged", "Ranged" }, { "healer", "Healer" } }
+local PARTY = { { "off", "Off" }, { "ring", "Right stick" }, { "dpad", "D-pad" } }
 local SPEEDS = { { "0.6", "Slow" }, { "1", "Normal" }, { "1.5", "Fast" } }
 local WINDOW_SCALES = { { "0.8", "80%" }, { "0.9", "90%" }, { "1", "100%" }, { "1.1", "110%" }, { "1.25", "125%" } }
 local STICK_HIDES ={ { "0", "Never" }, { "1", "When the character moves" }, { "2", "When either stick moves" } }
@@ -247,6 +248,8 @@ local function buildLeft(x, y)
 		y = row(x, y, layer[2], choice(ns.KeyOptions(ns.MODIFIER_KEYS), function() return ns.LayerButtonKey(layer[1]) end,
 			function(key) ns.SetLayerButton(layer[1], key) end), "The button you hold to use this layer's set of actions.")
 	end
+	y = row(x, y, "Party targeting", choice(PARTY, ns.PartyStyle, ns.SetupParty),
+		"Hold the Layer 3 button and press a direction to target that party member: the right stick, and its click for yourself, or the D-pad, and A for yourself. A ring names who is where.")
 	y = note(x, y, "Hold one to use its layer. It fires nothing itself, so it loses its own bindings.", 1) + GAP
 	y = heading(x, y, "Play style")
 	y = row(x, y, "Style", choice(playstyleOptions, function() return ns.db.playstyle or "manual" end, function(value)
