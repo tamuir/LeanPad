@@ -6,6 +6,10 @@ Lean controller play on World of Warcraft's own gamepad layer, for retail and Wo
 
 WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off.
 
+## New in 0.9.0
+
+- **Party targeting.** Hold the Layer 3 button and press a direction on the right stick or D-pad to target a party member, while a ring names who is where. Turn it on under *Party targeting* in `/lp settings`. The dialogue window also lists required currencies on a quest's progress page and no longer breaks after an NPC whose name the game hides.
+
 ## New in 0.8.1
 
 - **No more false alarm at login.** 0.8.0 showed its "bindings changed" pop-up on every login and reload, and put your profile back each time. Both are fixed, and the notice now names in chat which buttons changed.
