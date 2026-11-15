@@ -54,6 +54,15 @@ describe("Controller", function()
 		assert.is_nil(ns.ButtonForCommand("JUMP"))
 	end)
 
+	it("remembers a found button, and searches again for one not there yet", function()
+		assert.is_nil(ns.ButtonForCommand("MULTIACTIONBAR1BUTTON2"))
+		_G.MultiBarBottomLeftButton2 = { bindingAction = "MULTIACTIONBAR1BUTTON2", action = 62 }
+		local button = ns.ButtonForCommand("MULTIACTIONBAR1BUTTON2")
+		assert.equal(62, button.action)
+		_G.MultiBarBottomLeftButton2 = nil
+		assert.equal(button, ns.ButtonForCommand("MULTIACTIONBAR1BUTTON2"))
+	end)
+
 	it("reads held modifiers as a binding prefix", function()
 		assert.equal("", ns.HeldPrefix())
 		w.held = { shift = true, ctrl = true, alt = true }
@@ -927,6 +936,12 @@ describe("Controller", function()
 			assert.equal("LeanPad: " .. ns.BarAddonNote("ElvUI"), w.printed[#w.printed])
 			assert.matches("its Bars 6, 5 and 3", ns.BarAddonNote("ElvUI"))
 			assert.matches("^Bartender4 runs your action bars", ns.BarAddonNote("Bartender4"))
+		end)
+
+		it("say so at login when ConsolePort is on too, in Blizzard's red text", function()
+			w.addons.ConsolePort = true
+			wow.fire("PLAYER_ENTERING_WORLD")
+			assert.matches("^LeanPad: ConsolePort is on as well", w.uiErrors[#w.uiErrors])
 		end)
 
 		it("make Blizzard's turned-off bars no reason to warn", function()

@@ -111,12 +111,18 @@ function ns.HeldModifierKeys()
 	return held
 end
 
--- The Blizzard bar button a binding command presses.
+-- The Blizzard bar button a binding command presses. The crossbar asks on every layer press, so a command that
+-- names no button is turned away unsearched and a found button is remembered: Blizzard's buttons never change.
+local commandButtons = {}
 function ns.ButtonForCommand(command)
+	if commandButtons[command] or not command:find("BUTTON%d+$") then return commandButtons[command] end
 	for _, name in ipairs(ActionButtonUtil.ActionBarButtonNames) do
 		for i = 1, NUM_ACTIONBAR_BUTTONS do
 			local button = _G[name .. i]
-			if button and button.bindingAction == command then return button end
+			if button and button.bindingAction == command then
+				commandButtons[command] = button
+				return button
+			end
 		end
 	end
 end
@@ -201,6 +207,7 @@ end
 EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
 	local addon = ns.BarAddon()
 	if addon then print("LeanPad: " .. ns.BarAddonNote(addon)) end
+	if C_AddOns.IsAddOnLoaded("ConsolePort") then ns.Warn("ConsolePort is on as well. Both set the controller's bindings and settings and will undo each other's; turn one of them off.") end
 end)
 
 -- What a bar slot holds, by name, so the editor says Blink rather than Action Button 2.
