@@ -272,6 +272,7 @@ describe("Forever", function()
 		it("make the Default profile at login", function()
 			w.actions[200] = { texture = 1, kind = "spell", id = 7 }
 			wow.fire("PLAYER_ENTERING_WORLD")
+			wow.nextFrame()
 			local default = ns.db.profiles.Default
 			assert.equal("GAMEPADLEFTMOD", default.bindings["CONTEXT:PADLTRIGGER"])
 			assert.same({ "spell", 7 }, default.slots[253][200])
@@ -441,6 +442,7 @@ describe("Forever", function()
 		it("keeps the answer out of profiles", function()
 			ns.db.gamepadUIKept = true
 			wow.fire("PLAYER_ENTERING_WORLD")
+			wow.nextFrame()
 			assert.is_nil(ns.db.profiles.Default.settings.gamepadUIKept)
 		end)
 

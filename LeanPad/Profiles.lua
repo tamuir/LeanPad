@@ -214,19 +214,22 @@ end
 
 -- Before profiles, every setting lived in one account-wide table: it becomes Default, used by the first
 -- character to log in. Later, each login puts the character's profile in place, as another character may
--- have changed it.
+-- have changed it. All of it waits a frame: while the UI loads, GetBinding lists no keys, so the live bindings
+-- would read as empty, the profile as changed, and a first profile would be saved with no bindings at all.
 EventUtil.RegisterOnceFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
-	if not ns.db.profiles then
-		ns.db.profiles = { Default = capture(nil, true) }
-		ns.char.profile = "Default"
-		return
-	end
-	local name = ns.char.profile
-	if not ns.db.profiles[name] then
-		ns.char.profile = nil
-		return
-	end
-	ns.OutOfCombat(function() apply(name, true) end)
+	RunNextFrame(function()
+		if not ns.db.profiles then
+			ns.db.profiles = { Default = capture(nil, true) }
+			ns.char.profile = "Default"
+			return
+		end
+		local name = ns.char.profile
+		if not ns.db.profiles[name] then
+			ns.char.profile = nil
+			return
+		end
+		ns.OutOfCombat(function() apply(name, true) end)
+	end)
 end)
 
 local watcher = CreateFrame("Frame")
