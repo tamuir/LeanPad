@@ -119,6 +119,9 @@ local function apply(name, withSlots)
 	end
 	for key, value in pairs(CopyTable(profile.settings)) do ns.db[key] = value end
 	local live = ns.Snapshot(CVARS)
+	-- 0.8.0 could save a profile with no bindings at all, at a logout with its pop-up unanswered. Putting that back
+	-- would clear the pad, so such a profile takes the live bindings instead.
+	if not next(profile.bindings) then profile.bindings = live.bindings end
 	if ns.Differs(profile.bindings, live.bindings) or ns.Differs(live.bindings, profile.bindings) or ns.Differs(profile.cvars, live.cvars) then
 		ns.PutBack(profile)
 		print(("LeanPad: your controller bindings had changed since profile %s was saved; LeanPad put the profile back."):format(name))
