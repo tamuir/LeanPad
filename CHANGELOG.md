@@ -4,6 +4,18 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-11-16
+
+### Added
+
+- **Party targeting.** Hold the Layer 3 button and press a direction to target a party member: on the right stick, with its click for yourself, or on the D-pad, with A for yourself. Choose it under *Party targeting* in `/lp settings`, or type `/lp party ring`, `/lp party dpad` or `/lp party off`. You can also put Blizzard's *Target Party Member 1-4* and *Target Self* on any buttons of any layer in the editor.
+- **A ring names who is where.** While you hold a layer that targets party members, in a group, each member's name shows beside the button that picks them.
+- **The quest progress page lists required currencies**, such as Voidlight Marl, beside required items.
+
+### Fixed
+
+- **The dialogue window no longer breaks after talking to an NPC whose name the game hides from addons.** It stopped with a Lua error on every NPC until a reload.
+
 ## [0.8.1] - 2026-11-15
 
 ### Fixed
