@@ -480,11 +480,14 @@ function M.reset()
 	-- Rewards beyond items: currency choices by loot type 1 in w.quest.currencyChoices (index to info), fixed currencies,
 	-- spells (each { id, info }, known when in w.quest.knownSpells), honor and major faction reputation.
 	w.quest.currencyChoices, w.quest.currencies, w.quest.spells, w.quest.knownSpells, w.quest.reputation, w.quest.honor = {}, nil, nil, {}, nil, 0
+	w.quest.requiredCurrencies = {} -- each a QuestRequiredCurrencyInfo
+	GetNumQuestCurrencies = function() return #w.quest.requiredCurrencies end
 	GetQuestID = function() return 77 end
 	GetRewardHonor = function() return w.quest.honor end
 	GetQuestItemInfoLootType = function(_, index) return w.quest.currencyChoices[index] and 1 or 0 end
 	C_QuestOffer = {
 		GetQuestRewardCurrencyInfo = function(_, index) return w.quest.currencyChoices[index] end,
+		GetQuestRequiredCurrencyInfo = function(index) return w.quest.requiredCurrencies[index] end,
 		GetQuestOfferMajorFactionReputationRewards = function() return w.quest.reputation end,
 	}
 	C_QuestInfoSystem = {

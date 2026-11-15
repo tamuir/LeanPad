@@ -459,10 +459,11 @@ describe("Dialogue window", function()
 	describe("quest progress", function()
 		it("lists what's needed and continues on A once the quest can be completed", function()
 			w.quest.required = { { "Boar Hide", 105, 10 } }
+			w.quest.requiredCurrencies = { { name = "Voidlight Marl", texture = 7, requiredAmount = 50, quality = 3 } }
 			w.quest.money = 300
 			fire("QUEST_PROGRESS")
 			assert.equal("Got them?", window().Body.text)
-			assert.same({ "Boar Hide x10" }, labels())
+			assert.same({ "Boar Hide x10", "Voidlight Marl x50" }, labels())
 			assert.equal("Costs 300c", window().Money.text)
 			assert.equal("Continue", confirmText())
 			press("PAD1")

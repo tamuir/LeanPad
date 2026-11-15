@@ -15,6 +15,7 @@ local PAD, FOOTER, TEXT_HEIGHT, SCROLL_STEP, COLUMN = 24, 64, 260, 60, 540
 local TILE_GAP, TILE_HEIGHT, TILES_PER_ROW = 10, 44, 3
 local TILE_WIDTH = (COLUMN - (TILES_PER_ROW - 1) * TILE_GAP) / TILES_PER_ROW
 local MODEL_WIDTH, MODEL_HEIGHT, PORTRAIT = 170, 200, 64
+local KICKER_HEIGHT = 17 -- the small name's line and its gap to the headline
 ns.DIALOGUE_TEXT_SIZES = { { "15", "Small" }, { "17", "Medium" }, { "19", "Large" }, { "22", "Largest" } }
 ns.DIALOGUE_POSITIONS = {
 	{ "TOPLEFT", "Top left" }, { "TOP", "Top centre" }, { "TOPRIGHT", "Top right" },
@@ -169,6 +170,12 @@ local PAGES = {
 		entries = function()
 			local list = {}
 			addItems(list, "required", GetNumQuestItems())
+			for i = 1, GetNumQuestCurrencies() do
+				local info = C_QuestOffer.GetQuestRequiredCurrencyInfo(i)
+				if info then
+					add(list, counted(info.name, info.requiredAmount), info.texture, nil, { "required", i, "currency" }, info.quality)
+				end
+			end
 			return list
 		end,
 	},
@@ -417,6 +424,7 @@ function ns.RefreshDialogue()
 	local size = ns.db.dialogueTextSize or 17
 	local lineHeight = size + 15
 	window.Headline:SetFontObject(ns.Font(size + 9, C.text, titleFace))
+	window.Rule:SetPoint("TOPLEFT", 0, -(KICKER_HEIGHT + size + 9 + 10))
 	window.Body:SetFontObject(ns.Font(size, C.text, questFace))
 	if page.title then window.Headline:SetText(page.title()) end
 	window.Body:SetText(page.text() or "")
@@ -601,13 +609,13 @@ local function build()
 	window.Kicker = text(window.Content, 13, C.accent)
 	window.Kicker:SetPoint("TOPLEFT")
 	window.Headline = text(window.Content, 26, C.text, QuestTitleFont)
-	window.Headline:SetPoint("TOPLEFT", window.Kicker, "BOTTOMLEFT", 0, -4)
+	-- A secret NPC name makes whatever anchors to it secret, till a reload, so nothing anchors to the name lines.
+	window.Headline:SetPoint("TOPLEFT", 0, -KICKER_HEIGHT)
 	window.Headline:SetPoint("RIGHT")
 	window.Headline:SetWordWrap(false)
 	window.Rule = window.Content:CreateTexture(nil, "ARTWORK")
 	window.Rule:SetColorTexture(unpack(C.accent))
 	window.Rule:SetSize(48, 2)
-	window.Rule:SetPoint("TOPLEFT", window.Headline, "BOTTOMLEFT", 0, -10)
 	window.Scroll = CreateFrame("ScrollFrame", nil, window.Content)
 	window.Scroll:SetPoint("TOPLEFT", window.Rule, "BOTTOMLEFT", 0, -14)
 	window.Scroll:SetWidth(COLUMN)
