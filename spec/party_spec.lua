@@ -3,12 +3,14 @@ local wow = require("spec.wow")
 describe("Party targeting", function()
 	local ns, w
 
-	local function altChanged(held)
-		w.held.alt = held
+	local function held(modifier, down)
+		w.held[modifier] = down
 		for _, widget in ipairs(w.widgets) do
 			if widget.events.MODIFIER_STATE_CHANGED and widget.scripts.OnEvent then widget.scripts.OnEvent(widget, "MODIFIER_STATE_CHANGED") end
 		end
 	end
+
+	local function altChanged(down) held("alt", down) end
 
 	local function shownNames()
 		local names = {}
@@ -97,6 +99,24 @@ describe("Party targeting", function()
 			w.group.party3 = "Odrin"
 			altChanged(true)
 			assert.same({ "Thornwall", "Kessa", "Odrin", "Vael", "Bear" }, shownNames())
+		end)
+
+		it("follows the buttons the player chose, on whichever layer they are", function()
+			SlashCmdList.LEANPAD("party off")
+			w.bindings["CTRL-PADPADDLE1"], w.bindings["ALT-CTRL-PADPADDLE2"] = "TARGETPARTYMEMBER2", "TARGETPARTYMEMBER1"
+			altChanged(true)
+			assert.is_nil(LeanPadPartyRing)
+			altChanged(false)
+			held("ctrl", true)
+			assert.same({ false, "Kessa", false, false, false }, shownNames())
+			held("ctrl", false)
+			assert.is_false(LeanPadPartyRing:IsShown())
+		end)
+
+		it("shows each button's glyph beside the name", function()
+			w.glyphs.PADRSTICKUP = "|A:Gen_RStickUp:14:14|a"
+			altChanged(true)
+			assert.equal("|A:Gen_RStickUp:18:18|a Thornwall", LeanPadPartyRing.names[1].Text.text)
 		end)
 
 		it("stays away outside a group", function()

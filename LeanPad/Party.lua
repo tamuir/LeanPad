@@ -1,9 +1,10 @@
 local _, ns = ...
 
--- Party targeting: while the Layer 3 button (Alt) is held, four directions are Blizzard's Target Party Member 1-4
--- and one more press is Target Self. These are plain saved bindings, so they work in combat with no secure code of
--- LeanPad's. The ring names who is where while the button is held. A unit's name may be secret in combat, so it
--- goes straight to SetText and is never read, and nothing here asks which member is the target.
+-- Party targeting: buttons of a layer bound to Blizzard's Target Party Member 1-4 and Target Self. These are plain
+-- saved bindings, so they work in combat with no secure code of LeanPad's, and the editor can put them on any button
+-- of any layer; the two styles here are presets on Layer 3 (Alt). While a layer that has any is held, the ring
+-- names each member beside the button that picks them. A unit's name may be secret in combat, so it is only joined
+-- to its glyph and handed to SetText, never read, and nothing here asks which member is the target.
 local COMMANDS = { "TARGETPARTYMEMBER1", "TARGETPARTYMEMBER2", "TARGETPARTYMEMBER3", "TARGETPARTYMEMBER4", "TARGETSELF" }
 -- Up, right, down, left, then the press that is the player: the right stick and its click, or the D-pad and A.
 local STYLES = {
@@ -52,7 +53,7 @@ local function build()
 	ring.names = {}
 	for i, place in ipairs(PLACES) do
 		local name = ns.Panel(ring, ns.COLORS.bg, i == 5 and ns.COLORS.edge or ns.COLORS.accent)
-		name:SetSize(120, 26)
+		name:SetSize(140, 26)
 		name:SetPoint(place[1], ring, place[2], place[3], place[4])
 		name.Text = ns.Text(name, 15, ns.COLORS.text, "CENTER")
 		name.Text:SetPoint("LEFT", 6, 0)
@@ -62,17 +63,30 @@ local function build()
 	end
 end
 
+-- The button that fires a command on the held layer, without the layer's modifiers; nil when none does.
+local function heldKey(command, prefix)
+	for _, key in ipairs({ GetBindingKey(command) }) do
+		local rest = key:sub(1, #prefix) == prefix and key:sub(#prefix + 1)
+		if rest and not rest:find("-", 1, true) then return rest end
+	end
+end
+
 local watcher = CreateFrame("Frame")
 watcher:RegisterEvent("MODIFIER_STATE_CHANGED")
 watcher:SetScript("OnEvent", function()
-	if not (IsAltKeyDown() and IsInGroup() and ns.PartyStyle() ~= "off") then
+	local prefix, keys = ns.HeldPrefix(), {}
+	if prefix ~= "" and IsInGroup() then
+		for i, command in ipairs(COMMANDS) do keys[i] = heldKey(command, prefix) end
+	end
+	if not next(keys) then
 		if ring then ring:Hide() end
 		return
 	end
 	if not ring then build() end
 	for i, name in ipairs(ring.names) do
-		name:SetShown(UnitExists(UNITS[i]))
-		name.Text:SetText((UnitName(UNITS[i])))
+		local shown = keys[i] ~= nil and UnitExists(UNITS[i])
+		name:SetShown(shown)
+		if shown then name.Text:SetText(ns.Glyphed(keys[i], (UnitName(UNITS[i])), 18)) end
 	end
 	ring:Show()
 end)
