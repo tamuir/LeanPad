@@ -4,6 +4,19 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-11-15
+
+### Added
+
+- **LeanPad says when your controller bindings change outside it.** A switch to or from character-specific key bindings, a reset in Blizzard's Keybindings menu or another addon can replace your pad bindings without a word. LeanPad now asks in a pop-up whether to put back the layout it last saved or keep the new bindings. Changes you make in LeanPad never ask.
+- **A warning when ConsolePort is on as well**, in chat at login. Both addons set the controller's bindings and settings, and each undoes the other's.
+- **An empty crossbar says why.** With no controller button bound to an action, the crossbar shows a line pointing to `/lp`, instead of only a layer's name.
+
+### Changed
+
+- **Profiles keep the layout LeanPad last saved.** Bindings changed from outside no longer replace a profile's at logout, and when LeanPad puts a profile back at login because the bindings had changed, it says so in chat.
+- **The crossbar does less work.** A burst of changes, such as every bar slot on a spec swap, redraws it once instead of once per change, and a layer press no longer searches Blizzard's bars for each button.
+
 ## [0.7.1] - 2026-11-09
 
 ### Changed
