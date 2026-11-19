@@ -4,6 +4,16 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-11-20
+
+### Fixed
+
+- **Connecting the controller after logging in could clear its bindings.** The "bindings changed outside LeanPad" pop-up could appear with nothing remembered, and *Put mine back* then unbound every controller button. LeanPad now starts from the first bindings the game lists.
+
+### Changed
+
+- **Saving a profile is one step.** *Save current setup as...* in the *Profile* menu replaces *New from current setup...* and *Copy...*. It saves your setup under a name, asks before replacing a profile that already has it, and leaves you on the profile you use; pick the saved one in the menu to switch to it. A profile you are not using stays exactly as saved, so it works as a backup.
+
 ## [0.9.0] - 2026-11-16
 
 ### Added
