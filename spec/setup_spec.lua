@@ -344,6 +344,19 @@ describe("Setup", function()
 				assert.same({ "LEANPAD_CHANGED" }, w.popups)
 			end)
 
+			it("starts from the first bindings to show when none were listed at load, rather than offer to put nothing back", function()
+				local saved = w.bindings
+				w.bindings = {}
+				loaded()
+				wow.nextFrame()
+				w.bindings = saved -- as when the controller connects after login
+				bindingsUpdate()
+				assert.same({}, w.popups)
+				w.bindings.PAD1 = nil
+				bindingsUpdate()
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+			end)
+
 			describe("once loaded", function()
 			before_each(function()
 				loaded()

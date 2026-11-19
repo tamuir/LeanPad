@@ -145,7 +145,9 @@ claimer:SetScript("OnEvent", function(_, event)
 		queued = nil
 		if not loaded then return end
 		local live = padBindings()
-		known = known or live
+		-- An empty start is a read from before the client listed the pad's keys, not a layout: Put mine back would
+		-- clear the pad with it. The first bindings to show are the start instead.
+		if not (known and next(known)) then known = live return end
 		local changed = changes(known, live)
 		if not changed[1] then return end
 		print("LeanPad: controller bindings changed outside LeanPad. " .. table.concat(changed, ", ", 1, math.min(#changed, 8)))
