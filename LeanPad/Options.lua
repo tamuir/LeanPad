@@ -332,15 +332,14 @@ local function askName(text, done)
 	StaticPopup_ShowCustomGenericInputBox({ text = text, text_arg1 = ns.char.profile, callback = done, acceptText = ACCEPT, maxLetters = 24 })
 end
 
--- Switch to a profile, make, copy, rename or delete one, and pick the profile each spec switches to.
+-- Switch to a profile, save the current setup as one, rename or delete one, and pick the profile each spec switches to.
 local function profileMenu(root)
 	local current, names = ns.char.profile, {}
 	for _, name in ipairs(ns.ProfileNames()) do table.insert(names, { name, name }) end
 	ns.Radios(root, names, function() return ns.char.profile end, function(name) ns.SwitchProfile(name) end)
 	root:CreateDivider()
-	root:CreateButton("New from current setup...", function() askName("Name the new profile. It starts as your current setup.", ns.NewProfile) end)
+	root:CreateButton("Save current setup as...", function() askName("Name the profile to save your current setup as. You don't switch to it: pick it in this menu when you want it.", ns.SaveProfileAs) end)
 	if current then
-		root:CreateButton("Copy...", function() askName("Name the copy of %s.", ns.CopyProfile) end)
 		root:CreateButton("Rename...", function() askName("Rename %s to:", ns.RenameProfile) end)
 		root:CreateButton("Delete...", function()
 			StaticPopup_ShowCustomGenericConfirmation({ text = "Delete profile %s? Your setup stays as it is now.", text_arg1 = current, callback = function() ns.DeleteProfile(current) end })

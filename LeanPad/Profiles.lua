@@ -169,22 +169,18 @@ local function freeName(name)
 	return name
 end
 
-function ns.NewProfile(name)
-	name = freeName(name)
-	if not name then return end
+-- The current setup under a name, without switching to it: a profile no character uses stays as it was saved, to
+-- come back to. Saving over a profile changes it for every character that uses it, so that asks first.
+function ns.SaveProfileAs(name, replace)
+	name = name:match("^%s*(.-)%s*$")
+	if name == "" then return end
+	if ns.db.profiles[name] and not replace then
+		return StaticPopup_ShowCustomGenericConfirmation({ text = "Replace profile %s with your current setup?", text_arg1 = name, callback = function() ns.SaveProfileAs(name, true) end })
+	end
 	save(true)
-	ns.db.profiles[name] = capture(nil, true)
-	ns.char.profile = name
-	print(("LeanPad: profile %s made from your current setup, and in use."):format(name))
-	ns.RefreshOptions()
-end
-
-function ns.CopyProfile(name)
-	name = freeName(name)
-	if not name then return end
-	save(true)
-	ns.db.profiles[name] = CopyTable(ns.db.profiles[ns.char.profile])
-	print(("LeanPad: %s copied to %s."):format(ns.char.profile, name))
+	local current = ns.db.profiles[ns.char.profile]
+	ns.db.profiles[name] = current and CopyTable(current) or capture(nil, true)
+	print(("LeanPad: current setup saved as profile %s."):format(name))
 end
 
 -- Other characters that use the old name lose their link to it and keep their setup as it is.
