@@ -6,9 +6,10 @@
 
 WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off. It works with Blizzard's bars, ElvUI or any other bar addon.
 
-## New in 0.9.0
+## New in 0.9.1
 
-- **Party targeting.** Hold the Layer 3 button and press a direction on the right stick or D-pad to target a party member, while a ring names who is where. Turn it on under *Party targeting* in `/lp settings`. The dialogue window also lists required currencies on a quest's progress page and no longer breaks after an NPC whose name the game hides.
+- **Connecting the controller after login no longer risks clearing its bindings.** The "bindings changed" pop-up could appear with nothing remembered, and *Put mine back* then unbound every button.
+- **Save current setup as...** One entry in the *Profile* menu saves your setup under a name, new or existing, and leaves you on the profile you use. A profile you aren't using stays as saved, so it doubles as a backup.
 
 Earlier releases: see the [changelog](https://github.com/tamuir/LeanPad/blob/main/CHANGELOG.md).
 
