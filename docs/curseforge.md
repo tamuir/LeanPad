@@ -51,6 +51,7 @@ Seven styles, picked from *View* on the settings page. The square grid sits unde
 
 - **One-click setup.** Turns on the gamepad, makes the triggers your layer buttons, sets the cursor clicks and gamepad soft targeting, and binds the controller to Action Bars 1 to 4. An existing controller layout is kept unless you choose otherwise, and *Undo setup* puts everything back.
 - **Three crossbar layers.** Hold LT, RT or both to reach a full D-pad and face-button set on its own action bar. Layer buttons only switch layers, as in FFXIV.
+- **Binds per form and stance.** The Base layer is Action Bar 1, which swaps with your form or stance, so Cat Form, Bear Form, Prowl and Moonkin Form each get their own buttons. The *Base* picker next to the controller name in the editor lets you set up any form you have shifted into once, without shifting. The LT and RT layers are the same in every form; put a `[form:N]` macro there for a per-form button.
 - **Controller editor.** A drawing of your PlayStation or Xbox pad with every button labelled. Press a button to see and change what it does.
 - **Crossbar HUD.** Your controller actions in controller-shaped clusters with cooldowns and charges. Drag, size and snap the whole bar, each set or each button.
 - **Show empty buttons.** Optionally draws every button in the layout as a faint socket before anything is bound. On by default on Forever.
