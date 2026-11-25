@@ -127,6 +127,14 @@ describe("Profiles", function()
 		assert.is_false(ns.db.profiles.Default.slots[253][1])
 	end)
 
+	it("keeps the profile's bindings when none were listed all session", function()
+		local saved = ns.db.profiles.Default.bindings
+		w.bindings = {}
+		watcher():Fire("OnEvent", "PLAYER_LOGOUT")
+		assert.is_truthy(next(saved))
+		assert.same(saved, ns.db.profiles.Default.bindings)
+	end)
+
 	it("saves LeanPad's bindings, not ones changed from outside that the player hasn't kept", function()
 		local function bindings(event)
 			for _, widget in ipairs(w.widgets) do

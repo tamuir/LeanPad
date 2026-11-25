@@ -387,6 +387,26 @@ describe("Setup", function()
 				assert.same({ "LEANPAD_CHANGED" }, w.popups)
 			end)
 
+			it("says nothing as the controller disconnects and connects again", function()
+				w.padGone = true
+				bindingsUpdate()
+				w.bindings.PAD1 = nil -- a real change still shows
+				bindingsUpdate()
+				assert.same({ "LeanPad: controller bindings changed outside LeanPad. PAD1: JUMP -> nothing" }, w.printed)
+				w.bindings.PAD1, w.padGone = "JUMP", nil
+				bindingsUpdate()
+				assert.same({ "LEANPAD_CHANGED" }, w.popups)
+			end)
+
+			it("takes no keys listed at all as the client not listing them", function()
+				local saved = w.bindings
+				w.bindings = {}
+				bindingsUpdate()
+				w.bindings = saved
+				bindingsUpdate()
+				assert.same({}, w.popups)
+			end)
+
 			it("stays quiet about LeanPad's own changes", function()
 				ns.Apply()
 				bindingsUpdate()

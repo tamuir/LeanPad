@@ -7,6 +7,8 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 ### Fixed
 
 - **A Lua error on clicking a line in the dialogue window** after the game had dropped it. The click now does nothing.
+- **The "bindings changed outside LeanPad" pop-up appeared as the controller disconnected**, with nothing changed. The game stops listing controller buttons then, and LeanPad took them for unbound.
+- **Playing without the controller no longer empties the profile's bindings**, or says at login that they had changed.
 
 ## [0.9.2] - 2026-11-25
 

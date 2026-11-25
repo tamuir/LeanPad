@@ -107,7 +107,10 @@ end
 local function save(withSlots)
 	local name = ns.char.profile
 	local old = ns.db.profiles and ns.db.profiles[name]
-	if old then ns.db.profiles[name] = capture(old.slots, withSlots) end
+	if not old then return end
+	local new = capture(old.slots, withSlots)
+	if not next(new.bindings) then new.bindings = old.bindings end -- none were listed; never save over a layout with nothing
+	ns.db.profiles[name] = new
 end
 
 -- Makes a profile the live setup. Bindings and CVars are written only when they differ, so logging in on an

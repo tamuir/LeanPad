@@ -270,10 +270,11 @@ function M.reset()
 
 	GetNumBindings = function() return #w.bindingList end
 	-- The action, its category, then every key bound to it, as the client returns them.
-	GetBinding = function(index)
+	-- With no controller connected, pad keys are listed only when asked for.
+	GetBinding = function(index, alwaysIncludeGamepad)
 		local action, keys = w.bindingList[index][1], {}
 		for key, bound in pairs(w.bindings) do
-			if bound == action then table.insert(keys, key) end
+			if bound == action and (alwaysIncludeGamepad or not w.padGone or not key:find("PAD")) then table.insert(keys, key) end
 		end
 		table.sort(keys)
 		return action, w.bindingList[index][2], unpack(keys)

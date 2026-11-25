@@ -76,7 +76,7 @@ function ns.ShowReset() StaticPopup_Show("LEANPAD_SETUP") end
 local function padBindings()
 	local found = {}
 	for i = 1, GetNumBindings() do
-		local binding = { GetBinding(i) } -- action, category, then each key bound to it
+		local binding = { GetBinding(i, true) } -- action, category, then each key bound to it; true lists pad keys with no controller connected
 		for k = 3, #binding do
 			if binding[k]:gsub("^.*%-", ""):match("^PAD") then found[binding[k]] = binding[1] end
 		end
@@ -148,6 +148,7 @@ claimer:SetScript("OnEvent", function(_, event)
 		-- An empty start is a read from before the client listed the pad's keys, not a layout: Put mine back would
 		-- clear the pad with it. The first bindings to show are the start instead.
 		if not (known and next(known)) then known = live return end
+		if not next(live) then return end -- nothing listed is the client not listing the pad's keys, not a change
 		local changed = changes(known, live)
 		if not changed[1] then return end
 		print("LeanPad: controller bindings changed outside LeanPad. " .. table.concat(changed, ", ", 1, math.min(#changed, 8)))
