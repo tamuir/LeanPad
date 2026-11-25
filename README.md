@@ -1,127 +1,129 @@
-<p align="center"><img src="tools/preview/Logo.png" alt="LeanPad logo" width="128"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/tamuir/LeanPad/main/tools/preview/Logo.png" alt="LeanPad logo" width="128"></p>
 
 # LeanPad
 
-A lean controller addon for retail World of Warcraft (Midnight, 12.1.5) and WoW: Forever (1.60.1).
+Play World of Warcraft with an Xbox or PlayStation controller, on Blizzard's own action bars. For retail (Midnight, 12.1.5) and WoW: Forever (1.60.1).
 
-> **On WoW: Forever, turn off Blizzard's Gamepad UI for the full experience.** Untick *Enable Gamepad UI* in *Options > Gameplay > Gamepad (Alpha)*. LeanPad reminds you when you log in. [See what changes](#wow-forever).
+[CurseForge](https://www.curseforge.com/projects/1759710) · [Latest release](https://github.com/tamuir/LeanPad/releases/latest) · [Changelog](https://github.com/tamuir/LeanPad/blob/main/CHANGELOG.md) · [Report a bug](https://github.com/tamuir/LeanPad/issues)
 
-WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. You get a one-click setup, a crossbar-style layout across three trigger layers, a visual controller editor with its own settings page, and a movable crossbar HUD. It has no libraries and no code running while you are idle; its only art is its own controller drawings and command icons.
+![LeanPad's crossbar with a row of buttons for each layer: Base, LB, LT and LB + LT](https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/layout-square-one-per-layer.png)
 
-Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and the layout keeps working if you disable the addon.
+<p align="center"><img src="https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/dialogue-quest.png" alt="LeanPad's dialogue window: a quest from a dracthyr shown in 3D, its eight rewards as tiles, and Decline and Accept on Circle and Cross" width="640"></p>
 
-### New in 0.9.3
+Controller buttons are ordinary key bindings in WoW, and LeanPad sets them to fire Blizzard's bar slots. Your layout keeps working if you turn the addon off, and it works with Blizzard's bars, ElvUI or any other bar addon. LeanPad bundles no libraries, runs nothing while you're idle and never changes a binding in combat.
 
-- **No more "bindings changed" pop-up when you disconnect the controller**, with nothing changed. Playing without one no longer empties your profile's bindings either.
-- **No more Lua error on clicking a line in the dialogue window** that the game had just dropped. See the [changelog](CHANGELOG.md).
+## Install
 
-### New in 0.9.2
+Turn off ConsolePort first if you use it. Both addons write the gamepad bindings and will overwrite each other.
 
-- **No more Lua error on confirms with a countdown**, such as the item interaction window's. Their button has no label at first, which stopped the pad prompts under the pop-up from showing. See the [changelog](CHANGELOG.md).
+1. Install LeanPad from [CurseForge](https://www.curseforge.com/projects/1759710). Or download the [latest release](https://github.com/tamuir/LeanPad/releases/latest) and unzip the `LeanPad` folder into `World of Warcraft\_retail_\Interface\AddOns\`, or `_forever_` for WoW: Forever.
+2. Connect a controller that WoW's gamepad support recognises, and log in.
+3. Answer LeanPad's setup prompt. If buttons are already bound, it asks whether to keep your layout or use [LeanPad's](#default-layout).
+4. Type `/lp` to see what every button does.
 
-### New in 0.9.1
+Switching to LeanPad's layout clears your controller bindings, but saves them first: `/lp undo` brings them back. Keyboard and mouse bindings are never touched.
 
-- **Connecting the controller after login no longer risks clearing its bindings.** The "bindings changed" pop-up could appear with nothing remembered, and *Put mine back* then unbound every button.
-- **Save current setup as...** One entry in the *Profile* menu saves your setup under a name, new or existing, and leaves you on the profile you use. A profile you aren't using stays as saved, so it doubles as a backup. See the [changelog](CHANGELOG.md).
+**On WoW: Forever,** untick *Enable Gamepad UI* in *Options > Gameplay > Gamepad (Alpha)*. LeanPad can't do this for you, and [does less with it on](#wow-forever).
 
-### New in 0.9.0
+## What it does
 
-- **Party targeting.** Hold the Layer 3 button and press a direction on the right stick or D-pad to target a party member, while a ring names who is where. Turn it on under *Party targeting* in `/lp settings`. The dialogue window also lists required currencies on a quest's progress page and no longer breaks after an NPC whose name the game hides. See the [changelog](CHANGELOG.md).
+### Layers
 
-### New in 0.8.1
+Hold LT, RT or both, and the D-pad and face buttons switch to Action Bar 2, 3 or 4. The layer buttons fire nothing themselves, as in FFXIV. You can choose which buttons they are.
 
-- **No more false alarm at login.** 0.8.0 showed its "bindings changed" pop-up on every login and reload, and put your profile back each time. Both are fixed, and the notice now names in chat which buttons changed. See the [changelog](CHANGELOG.md).
+Without one held you're on the Base layer, which is Action Bar 1. It changes with your form or stance, so a druid's Cat, Bear and Moonkin Forms each have their own buttons. The other layers stay the same in every form; a `[form:N]` macro gives you a per-form button there.
 
-### New in 0.8.0
+### Controller editor
 
-- **LeanPad says when your bindings change outside it.** A switch of binding set, a reset or another addon can replace your controller bindings without a word. LeanPad now asks whether to put your layout back or keep the new one, and your profiles keep the layout LeanPad last saved.
-- **An empty crossbar says why**, and LeanPad warns at login when ConsolePort is on as well.
-- **A lighter crossbar.** A spec swap redraws it once, not once per bar slot. See the [changelog](CHANGELOG.md).
+![The controller editor: a PlayStation pad with the spell on every button, and Circle selected](https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/easy-binding-setup.png)
 
-### New in 0.7.1
+`/lp` opens a drawing of your pad. Press a button to see what it does on each layer, then pick a spell or macro from your spellbook, choose a command, or drag a spell onto it. The *Base* picker sets up any form you've been in before, without shifting.
 
-- **Spells find a slot when a bar is full.** Pick a spell for a button and LeanPad puts it on a free slot of the layer's own bar, or of Action Bars 5-8 when that bar is full.
-- **The editor says why a change didn't happen**, in red in its footer, such as a bar with no free slot or a change tried in combat. With the editor closed, Blizzard's red error text says it.
-- *Auto-run* and *Toggle gamepad cursor* show their icons again. See the [changelog](CHANGELOG.md).
+<details>
+<summary>Which bar slot does a spell go to?</summary>
 
-### New in 0.7.0
+A button that already has a slot keeps it, and the new spell goes there. Otherwise LeanPad takes an empty slot that no pad button fires, on that layer's own bar, then on Action Bars 5-8, skipping any turned off in *Options > Gameplay > Action Bars*. It doesn't overwrite a spell to make room. If everything is full, the editor says so: empty a slot, or choose one yourself under *Change action > Bar slots*.
 
-- **Talk to NPCs and do quests from the pad**, in LeanPad's own dialogue window, made for reading: the NPC in 3D beside their words, rewards as tiles, and A, B and the D-pad to answer. Put it in any of nine places, at the size and text size you like.
-- **Pop-ups from the pad.** A, B, X and Y press the buttons of Blizzard's pop-ups, the dungeon queue pop and ready checks, named under each one.
-- **Settings in two tabs**, *Controls* and *Dialogue*, and an (i) on every setting that says what it does.
-- **WoW: Forever support**, and fixes. See the [changelog](CHANGELOG.md).
+</details>
 
-![LeanPad's dialogue window: an NPC in 3D beside their words, with quests and lines to choose](docs/images/dialogue-npc.png)
+### Crossbar
 
-![LeanPad's dialogue window offering a quest: its title, the letter's words, the gold reward, and Decline and Accept on B and A](docs/images/dialogue-quest.png)
+<p>
+  <img src="https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/layout-clusters.png" alt="The crossbar as round D-pad and face-button clusters" width="420">
+  <img src="https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/layout-square-grid.png" alt="The crossbar as a square grid" width="330">
+</p>
 
-![A pop-up with LeanPad's A and B prompts named under it](docs/images/popup.png)
+Seven on-screen layouts of your controller buttons, with cooldowns, charges, range and proc glows. Choose one under *View* in `/lp settings`, then unlock it to drag the whole bar, one set or one button. Scroll over a set to resize it. You can also skip the crossbar and place Blizzard's bars in Edit Mode.
 
-**Easy binding setup.** Press a button on your pad and see what it does on every layer, then change it in one step.
+### Quests, dialogue and pop-ups
 
-![The LeanPad controller editor with Circle selected, showing Swipe on Action Bar 1 and its other layers](docs/images/easy-binding-setup.png)
+LeanPad's own window shows the NPC in 3D beside their words, and rewards as tiles with their tooltips. The same buttons answer Blizzard's pop-ups, the dungeon queue and ready checks. This is on by default on Forever and off on retail; turn it on under *Dialogue* in `/lp settings`.
 
-**Easy binding mapping.** Pick a spell or macro straight from your spellbook, by spec, and LeanPad puts it on the button for you.
+<details>
+<summary>How it behaves</summary>
 
-![The LeanPad editor's Change action menu listing Guardian spells](docs/images/easy-binding-mapping.png)
+- A quest with several rewards won't complete until you pick one.
+- PvP quests, and quests that cost gold, take a second press of A.
+- In combat, new conversations open in Blizzard's windows and pop-ups wait for the cursor, so the pad stays on your abilities.
+- The window has nine positions, and you can set its size, text size, 3D NPC and an optional camera zoom.
 
-**Easy to understand settings.** Layer buttons, pad, labels, cursor, crossbar and soft targeting on the *Controls* tab next to the editor, and the dialogue window and pop-ups on the *Dialogue* tab.
+</details>
 
-![The LeanPad settings page on its Controls tab](docs/images/easy-to-understand-settings.png)
+### Party targeting
 
-![The Dialogue tab: the window's place, size, text size and 3D NPC, pop-ups, and the preview](docs/images/settings-dialogue.png)
+Hold a button and push a direction to target a party member, on the right stick or the D-pad. A ring names who is where. It needs a third layer button, which is unset by default:
 
-**Crossbar layouts.** Seven styles, picked from *View* on the settings page. The square grid sits under your character and swaps as you hold a layer button:
+1. In `/lp settings`, choose a button for *Layer 3, acts as Alt*.
+2. Set *Party targeting* to the right stick or D-pad.
 
-![The square grid crossbar under the character, two rows of square tiles](docs/images/layout-square-grid.png)
+### Play styles and profiles
 
-Square rows show every layer at once, one row each, the held one in front:
+A play style sets how your character moves in combat. Tanks face the camera so they never show the pack their back, melee and ranged spin round to run when you pull straight back, and healers run freely with friendly targeting. *Auto* follows your spec, though on Forever tanks and healers should pick by hand.
 
-![The square rows crossbar, one row of tiles for Base, LB, LT and LB + LT](docs/images/layout-square-one-per-layer.png)
+A profile saves everything: settings, bindings, controller options and bar slots. Link one to each spec and LeanPad switches when you respec. A profile you aren't using stays as saved, so it doubles as a backup.
 
-## Features
+## Default layout
 
-- **One-click setup.** Turns on the gamepad, makes LT and RT act as Shift and Ctrl, sets the cursor clicks and gamepad soft targeting, and binds the controller to Action Bars 1-4. If you already have a controller layout, LeanPad keeps it by default.
-- **Undo.** Setup and every reset save your controller settings and bindings first. *Undo reset* (`/lp undo`) brings back the layout the last reset replaced; *Undo setup* (`/lp restore`) returns to how things were before LeanPad.
-- **Three crossbar layers.** LT, RT and LT+RT each map the D-pad and face buttons onto 8 slots of their own action bar. The layer buttons only open layers and fire nothing themselves, as in FFXIV.
-- **Binds per form and stance.** The Base layer is Action Bar 1, which swaps with your form or stance, so Cat Form, Bear Form, Prowl and Moonkin Form each get their own buttons. The *Base* picker next to the controller name in the editor lets you set up any form you have shifted into once, without shifting. The LT and RT layers are the same in every form; put a `[form:N]` macro there for a per-form button.
-- **Controller editor.** `/lp` shows a drawing of your controller (PlayStation or Xbox, detected from the pad) with every bound button labelled around it, one layer at a time. Press any button, holding a layer button first for its layer, and LeanPad shows what it does: the spell on the slot, where it lives and what the same button does on the other layers. From there, pick a spell or macro straight from the menu and LeanPad finds it a bar slot, pick a bar slot or command by hand, clear it, or drag a spell onto it. Cursor users can click the drawing instead. The Menu button closes the editor.
-- **Settings page.** The editor's Settings button opens LeanPad's own page, in two tabs. *Controls*: which pad to use, Xbox or PlayStation labels, the layer buttons, a play style per role or by spec, soft targeting, the crossbar's view, size, opacity and position, and the native cursor's clicks, speed and behaviour. *Dialogue*: the dialogue window and pop-ups. Hover the (i) after any setting to see what it does.
-- **Profiles.** Save your whole setup, settings, bindings, controller CVars and the bar slots your pad fires, as a profile such as Tank, DPS or Healer, with *Save current setup as...* in the settings page's *Profile* menu, and switch from that menu or with `/lp profile <name>`. The profile you use follows your changes; one you aren't using stays as saved, so it doubles as a backup. Link a spec to a profile and LeanPad switches when you change spec. Profiles are shared by all your characters; each remembers its own.
-- **Play styles.** Tank keeps the body facing the camera in combat, so you never show the pack your back. Melee and Ranged strafe but spin to run when you push straight back. Healer runs free, since heals need no facing, and gets friendly soft targeting. Auto follows your spec. On Forever, where each class has one spec, Auto can't always tell a tank or healer, so pick those styles by hand.
-- **Crossbar HUD.** Shows your controller actions in controller-shaped clusters, with cooldowns, charges, usability, range, proc glows and a blink on every press. Seven styles: the D-pad and face-button clusters, as one set that swaps as you hold a layer button or all layers at once; one row, ordered by hand, which can stay faint until a layer is held; a square grid under the character; and a row per layer, square or round. Unlock it from the settings page or Blizzard's Edit Mode to drag the bar, each set or each button, with grid and neighbour snapping, and scroll over a set to size it. Turn its mouse on to click sockets as you would action bar buttons, drop spells onto them and read their tooltips. Stick clicks only get a socket when they hold a bar action, unless *Show empty buttons* is on.
-- **Talk to NPCs and do quests from the pad.** LeanPad's own window replaces Blizzard's gossip and quest windows: a card at any of nine places on screen, with the NPC in 3D, talking, beside their words, which write themselves in, in a column short enough to read at a glance and at the text size you choose. It lists the quests and lines to choose, and shows the rewards as tiles: items, currencies, spells, gold, XP, honor and renown. A confirms, B backs out, the D-pad chooses and the bumpers scroll long text. Choosing a reward shows its tooltip and how it compares with what you wear. A quest with several rewards won't complete until you pick one, and PvP quests and quests that cost gold take a second press of A. In combat, new conversations open in Blizzard's windows, so the pad stays on your abilities. The *Dialogue* tab of the settings sets where it shows, how large, the text size, the 3D NPC, the writing-in and an optional camera zoom, with a live preview. On by default on Forever and off on retail.
-- **Answer pop-ups from the pad.** The buttons on Blizzard's pop-ups, the dungeon queue pop and ready checks go to A, B, X and Y from left to right, named under the pop-up, such as Release Spirit and Recap when you die. They count as your own clicks, so entering a dungeon works. In combat pop-ups wait for the cursor. A setting of its own on the *Dialogue* tab.
-- **Show empty buttons.** A crossbar setting that draws every button in the layout as a faint socket before anything is bound, as Blizzard's Show Empty Action Bars does. On by default on Forever and off on retail.
-- **Blizzard's Settings panel.** *AddOns > LeanPad* opens the editor and its settings page, runs setup and undoes it.
-- **Icons for every command.** Targeting, jump, bags, menus and the rest have faces of their own, and Interact uses the game's own interact cursor, so the crossbar and the editor never show a blank socket for a command that lives on no action bar.
+![The default layout on an Xbox pad. The table below lists the same buttons.](https://raw.githubusercontent.com/tamuir/LeanPad/main/docs/images/default-layout.png)
 
-  <img src="tools/preview/Icons.png" alt="LeanPad's command icons" width="640">
+Slots are on Action Bar 1. On a PlayStation pad, A, B, X and Y are Cross, Circle, Square and Triangle, and LB, LT, RB and RT are L1, L2, R1 and R2.
 
-- **Combat-safe.** Bindings and CVars are only written out of combat. A request made in combat runs once combat ends.
+| Button | On its own | With LT | With RT | With LT + RT |
+| --- | --- | --- | --- | --- |
+| D-pad up | Slot 5 | Bar 2, slot 1 | Bar 3, slot 1 | Bar 4, slot 1 |
+| D-pad right | Nearest enemy | Bar 2, slot 2 | Bar 3, slot 2 | Bar 4, slot 2 |
+| D-pad down | Slot 6 | Bar 2, slot 3 | Bar 3, slot 3 | Bar 4, slot 3 |
+| D-pad left | Previous enemy | Bar 2, slot 4 | Bar 3, slot 4 | Bar 4, slot 4 |
+| Y | Slot 2 | Bar 2, slot 5 | Bar 3, slot 5 | Bar 4, slot 5 |
+| B | Interact | Bar 2, slot 6 | Bar 3, slot 6 | Bar 4, slot 6 |
+| A | Jump | Bar 2, slot 7 | Bar 3, slot 7 | Bar 4, slot 7 |
+| X | Slot 1 | Bar 2, slot 8 | Bar 3, slot 8 | Bar 4, slot 8 |
+| LB, RB | Slots 3, 4 | | | |
+| Left stick click | Auto-run | | | |
+| Right stick click | Gamepad cursor | | | |
+| View | Bags | World map | Character | |
+| Menu | Game menu | Spellbook | | |
 
-## Requirements
+## How do I…
 
-- World of Warcraft retail, interface 120105 (12.1.5), or WoW: Forever, interface 16001 (1.60.1)
-- A controller that WoW's built-in gamepad support recognises
+These use the default layout. The NPC and pop-up rows need the *Dialogue* settings on.
 
-## Installation
-
-1. Download the latest release, or clone this repository.
-2. Copy the `LeanPad` folder (the one containing `LeanPad.toc`) into `World of Warcraft\_retail_\Interface\AddOns\`, or `World of Warcraft\_forever_\Interface\AddOns\` for WoW: Forever.
-3. Start the game, or type `/reload` if it is already running.
-
-On your first login, LeanPad asks whether to set up the controller. You can run setup again any time from the editor's settings page or *Settings > AddOns > LeanPad*. LeanPad is also listed in the minimap's addon compartment. On Forever with Blizzard's Gamepad UI on, LeanPad reminds you to turn it off instead, and offers setup once you have.
-
-> **Using ConsolePort?** Disable it before using LeanPad. Both addons manage the gamepad bindings and CVars, and they will overwrite each other.
+| To | Press |
+| --- | --- |
+| Talk, loot, or open a door or chest | B, on the nearest one |
+| Click something on screen | Right stick click for the cursor, then A or B for left or right click. Click the stick again to hide it |
+| Close everything that's open, like Esc | Menu. Press it again for the game menu |
+| Answer an NPC or a quest | A to select or accept, B to leave or decline, the D-pad to choose, LB and RB to scroll |
+| Pick a quest reward | D-pad to it, then A |
+| Answer a pop-up, the dungeon queue or a ready check | A, B, X and Y press its buttons from left to right |
+| Release your spirit | A. Recap is on B |
+| Change a button | `/lp`, press the button, then *Change action*. Hold a layer button first for its layer |
+| Go back to the layout before the last reset | `/lp undo` |
+| Go back to the controls from before LeanPad | `/lp restore`. It doesn't reset play style settings |
 
 ## WoW: Forever
 
-Forever has its own controller interface, Blizzard's **Gamepad UI**, which replaces the action bars and takes over the controller's buttons. LeanPad works with it on or off, but you only get all of LeanPad with it off.
-
-To turn it off, untick *Enable Gamepad UI* in *Options > Gameplay > Gamepad (Alpha)*. The game doesn't let addons change this setting, so you do it yourself.
-
-If it's on when you log in, LeanPad reminds you. Press A or **Got it**, and LeanPad offers its layout setup as soon as you've unticked it. Press B or **Keep it on, don't ask again**, and LeanPad stops asking.
+Forever has its own controller interface, Blizzard's Gamepad UI, which replaces the action bars. LeanPad works with it on or off, but does more with it off. If it's on when you log in, LeanPad reminds you, then offers its layout once you've unticked it. Press B on the reminder to keep it on and not be asked again.
 
 | | Gamepad UI off | Gamepad UI on |
 | --- | --- | --- |
@@ -132,152 +134,33 @@ If it's on when you log in, LeanPad reminds you. Press A or **Got it**, and Lean
 | Answering quests with the pad | LeanPad's dialogue window | Blizzard's own |
 | Blizzard's radial menus, controller menu navigation and group targeting | No, use the cursor for windows | Yes |
 
-With the Gamepad UI on, LeanPad's layers are Blizzard's own bars (Base, LT, RT and LT+RT are its top, left, right and bottom bars, across its three pages), and LeanPad's crossbar stands in for them.
+With the Gamepad UI on, the Base, LT, RT and LT + RT layers are Blizzard's top, left, right and bottom gamepad bars, and LeanPad's crossbar stands in for them. Settings and profiles are separate from retail's.
 
-Your settings and profiles on Forever are separate from retail's, as each game keeps its own.
-
-## Usage
+## Commands
 
 | Command | What it does |
 | --- | --- |
-| `/lp` or `/leanpad` | Open or close the controller editor |
-| `/lp settings` | Open the editor on its settings page |
+| `/lp` | Open or close the controller editor |
+| `/lp settings` | Open the settings |
 | `/lp profile <name>` | Switch to a profile |
-| `/lp undo` | Bring back the controller layout from before the last reset |
-| `/lp restore` | Restore the controller settings and bindings from before setup |
-| `/lp party ring`, `dpad` or `off` | Party targeting on the right stick or D-pad while Layer 3 is held, or off |
-| `/lp perf` | Print LeanPad's CPU cost from the in-game addon profiler |
+| `/lp party ring`, `dpad` or `off` | Party targeting on the right stick or D-pad, or off |
+| `/lp undo` | Bring back the layout from before the last reset |
+| `/lp restore` | Bring back the controls from before LeanPad |
+| `/lp perf` | Print LeanPad's CPU cost |
 
-LeanPad also adds a **Toggle gamepad cursor** binding under *Key Bindings > AddOns > LeanPad*.
+## Something not working?
 
-### Changing a button
-
-1. Open the editor with `/lp`. Hold a layer button first to work on that layer.
-2. Press the button you want to change. The strip under the drawing shows what it does now and on the other layers.
-3. Choose **Change action**. *Spells* and *Macros* list your spellbook and macros; pick one and LeanPad puts it on the button, finding a free slot on that layer's action bar if the button has none. A free slot is empty and no pad button fires it; LeanPad never overwrites a spell there. If the bar has none, LeanPad takes the first free slot on Action Bars 5-8, skipping any turned off in *Options > Gameplay > Action Bars*. If those are full too, the editor says so: empty a slot, or give the button a slot of your choice through *Bar slots*, and its spells go there from then on. *Bar slots* and *Commands* list everything else Blizzard can bind. You can also drag a spell from the spellbook onto the strip.
-
-Each change is saved straight away to your account's or character's key bindings, whichever WoW is using, and the footer says *Saved*.
-
-### Default layout
-
-Button names use Xbox labels.
-
-| Button | Action |
+| Problem | Try |
 | --- | --- |
-| A | Jump |
-| B | Interact with target |
-| X, Y | Action Bar 1, slots 1-2 |
-| LB, RB | Action Bar 1, slots 3-4 |
-| D-pad up, down | Action Bar 1, slots 5-6 |
-| D-pad left, right | Previous enemy, nearest enemy |
-| Left stick click | Auto-run |
-| Right stick click | Toggle the gamepad cursor |
-| View | Open bags (LT+View: world map, RT+View: character) |
-| Menu | Game menu (LT+Menu: spellbook) |
+| The controller does nothing | Tick *Gamepad input* in `/lp settings`. On Forever, check the [Gamepad UI](#wow-forever) |
+| Buttons keep changing back | Turn off ConsolePort or any other gamepad addon |
+| A pop-up says your bindings changed | You switched between account and character key bindings, reset them, or another addon changed them. Put yours back or keep the new ones |
+| The wrong button names show | Set *Button labels* in `/lp settings` |
+| A layer's spells aren't on screen | Turn on Action Bars 2-4 in *Options > Gameplay > Action Bars*, or use the crossbar |
+| Blizzard's quest window opens instead | Turn on LeanPad's under *Dialogue* in `/lp settings`. In combat it's always Blizzard's |
 
-| Hold | Uses | D-pad up, right, down, left | Y, B, A, X |
-| --- | --- | --- | --- |
-| LT | Action Bar 2 | slots 1-4 | slots 5-8 |
-| RT | Action Bar 3 | slots 1-4 | slots 5-8 |
-| LT+RT | Action Bar 4 | slots 1-4 | slots 5-8 |
+Still stuck? [Open an issue](https://github.com/tamuir/LeanPad/issues) with your LeanPad version, controller, bar addon and any Lua error.
 
-Click the right stick to bring up the gamepad cursor when you need to click on an NPC, object or window; A then left-clicks and B right-clicks. Click it again to hide the cursor.
+## Contributing
 
-To see a layer on screen, turn on Action Bars 2-4 in *Settings > Action Bars* and place them in Edit Mode, or use LeanPad's crossbar HUD.
-
-### How do I…
-
-With LeanPad's layout, which the setup pop-up applies on first login, or *Reset layout...* on the *Controls* tab at any time. Xbox labels. The NPC, quest and pop-up rows also need those settings on, on the *Dialogue* tab: off by default on retail, on by default on Forever.
-
-| To | Press |
-| --- | --- |
-| Jump | A |
-| Talk to an NPC, loot, or open a door or chest | B, on the nearest one, which the pad picks for you |
-| Target an enemy | D-pad right for the nearest, D-pad left for the previous one |
-| Use a spell on Action Bar 1 | X, Y, LB, RB, D-pad up or down |
-| Use a spell on Action Bars 2-4 | Hold LT, RT or both, then a D-pad or face button |
-| Run without holding the stick | Left stick click |
-| Click something on screen | Right stick click brings up the cursor; A left-clicks, B right-clicks. Click the stick again to hide it |
-| Open or close your bags | View |
-| Open the world map, character pane or spellbook | LT+View, RT+View, LT+Menu |
-| Close everything that's open, like Esc | Menu. Press it again, with nothing open, for the game menu |
-| Answer an NPC or a quest | A selects, accepts or completes; B says goodbye or declines; the D-pad chooses; LB and RB scroll long text |
-| Pick a quest reward | D-pad to it, which shows its tooltip, then A |
-| Answer a pop-up, the dungeon queue or a ready check | A, B, X and Y press its buttons from left to right |
-| Release your spirit | A. Recap is the next button, on B |
-| Change what a button does | `/lp`, press the button, then *Change action* |
-| Change LeanPad's settings | `/lp settings`, with *Controls* and *Dialogue* tabs |
-| Go back to your old layout | `/lp undo` for the one before the last reset, `/lp restore` for the one before LeanPad |
-
-## Development
-
-```sh
-docker build -t leanpad-test spec
-docker run --rm -v "${PWD}:/src" leanpad-test
-```
-
-The screenshots in `docs/images` are taken in game by `tools/LeanPadShots`, a developer addon that is never packaged. Link it into `_retail_\Interface\AddOns` next to LeanPad, then `/lpshots` photographs the settings tabs, the dialogue preview and a demo pop-up, then you `/reload` to save; `/lpshots auto` photographs each conversation page as you play, until you `/reload`. `cd tools && npm install && npm run shots` crops them into `docs/images`, where the README and CurseForge page point. Turn on LeanPad's dialogue window and pop-ups first, so they're in the shots.
-
-The tests run [busted](https://lunarmodules.github.io/busted/) on Lua 5.1, the version the WoW client embeds. The run fails if line coverage of `LeanPad/` drops below 100%. `spec/wow.lua` fakes the WoW API, so every new API the addon calls needs a stub there.
-
-For live testing, link the `LeanPad` folder into your `AddOns` folder and use `/reload` after each edit. On Windows:
-
-```powershell
-New-Item -ItemType Junction -Path "<WoW>\_retail_\Interface\AddOns\LeanPad" -Target "<repo>\LeanPad"
-```
-
-Ground rules for changes:
-
-- Check every API against the `live` branch of [Gethe/wow-ui-source](https://github.com/Gethe/wow-ui-source), and the `forever` branch for WoW: Forever. `LeanPad/Forever.lua` loads only on Forever.
-- Only write CVars and bindings out of combat, from code the player triggered.
-- Never compare or do arithmetic on combat values; in Midnight they may be secret.
-- No `OnUpdate` while idle and no embedded libraries.
-- Art only where it matters. The controller drawings, highlight rings and command icons in `LeanPad/Art/` are LeanPad's own, generated by `tools/draw-pads.js` (see below). Everything else uses Blizzard's atlases, fonts and color textures.
-- Use `hooksecurefunc` only, and never change attributes on Blizzard's secure frames.
-- LeanPad is written from scratch on WoW's native gamepad API. Do not copy code, presets or layouts from other controller addons.
-
-### Controller art
-
-<p align="center">
-  <img src="tools/preview/PadPlayStation.png" alt="LeanPad's PlayStation controller drawing" width="420">
-  <img src="tools/preview/PadXbox.png" alt="LeanPad's Xbox controller drawing" width="420">
-</p>
-
-
-The controller drawings, command icons and logo are generated, not hand-edited. To change them, edit `tools/draw-pads.js` and run:
-
-```sh
-cd tools
-npm install
-node draw-pads.js
-```
-
-It writes the textures to `LeanPad/Art/` (32-bit TGA, the format the game loads), and a preview of each pad, a sheet of the icons and the 400 px logo for the store pages to `tools/preview/`. If you move a button in the drawing, update its position in `ns.PADS` in `LeanPad/Controller.lua` too; if you add an icon, give it an entry in `ns.COMMAND_ICONS`. The drawings are original; their proportions follow the CC0 [vector gamepad collection](https://opengameart.org/content/8th-gen-console-vector-gamepad-collection) by TheHoodieGuy02.
-
-### Releasing
-
-To release, turn the changelog's *Unreleased* notes into a dated version section and push to `main`:
-
-```markdown
-## [Unreleased]
-
-## [0.3.0] - 2026-11-01
-```
-
-The release workflow in `.github/workflows/release.yml` sees a version with no tag yet, runs the tests, tags it `v0.3.0`, and `tools/release.sh` zips the `LeanPad/` folder, stamps the version into the TOC and uploads the zip to GitHub Releases and CurseForge, with that version's changelog section as the notes. Pushes that leave the newest version unchanged release nothing. Pushing a `v*` tag by hand releases that tag the same way, and *Run workflow* on the Actions page re-releases the newest version. It needs the `CF_API_KEY` repository secret. To check a release without publishing, run `DRY_RUN=1 tools/release.sh 0.3.0` from the repository root.
-
-To release a beta, add a changelog section with a suffixed version, such as `## [0.7.0-beta.1] - 2026-11-05`, commit it, and push the tag `v0.7.0-beta.1` from any branch. A version with a suffix is uploaded as a beta for WoW: Forever only and marked as a pre-release on GitHub, so it never reaches retail players. If CurseForge doesn't list Forever's game version, the run stops before publishing anything. Merging that changelog section into `main` releases nothing, as only plain `x.y.z` headings count there.
-
-The reasoning behind the design is in [docs/WoW controller addon design.md](docs/WoW%20controller%20addon%20design.md).
-
-## Reporting a problem
-
-Open an issue at [github.com/tamuir/LeanPad/issues](https://github.com/tamuir/LeanPad/issues). The form asks for your LeanPad version, controller, bar addon and any Lua error, which is usually what it takes to find the cause.
-
-## Changelog
-
-See [CHANGELOG.md](CHANGELOG.md).
-
-## License
-
-LeanPad is licensed under the GNU General Public License, version 2 or (at your option) any later version. The full text is in [LICENSE](LICENSE).
+Tests, ground rules and releasing are in [CONTRIBUTING.md](https://github.com/tamuir/LeanPad/blob/main/CONTRIBUTING.md). LeanPad is licensed under the GNU GPL, [version 2 or later](https://github.com/tamuir/LeanPad/blob/main/LICENSE).
