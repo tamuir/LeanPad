@@ -6,10 +6,9 @@
 
 WoW already has a full gamepad layer built in: controller buttons are ordinary key bindings, the triggers can act as Shift and Ctrl, and there is a native gamepad cursor and soft targeting. LeanPad configures that layer for you instead of rebuilding it. Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and your layout keeps working if you turn the addon off. It works with Blizzard's bars, ElvUI or any other bar addon.
 
-## New in 0.9.1
+## New in 0.9.2
 
-- **Connecting the controller after login no longer risks clearing its bindings.** The "bindings changed" pop-up could appear with nothing remembered, and *Put mine back* then unbound every button.
-- **Save current setup as...** One entry in the *Profile* menu saves your setup under a name, new or existing, and leaves you on the profile you use. A profile you aren't using stays as saved, so it doubles as a backup.
+- **No more Lua error on confirms with a countdown**, such as the item interaction window's. Their button has no label at first, which stopped the pad prompts under the pop-up from showing.
 
 Earlier releases: see the [changelog](https://github.com/tamuir/LeanPad/blob/main/CHANGELOG.md).
 
