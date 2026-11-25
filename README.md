@@ -10,6 +10,11 @@ WoW already has a full gamepad layer built in: controller buttons are ordinary k
 
 Your actions stay on Blizzard's own action bars, so Blizzard draws the cooldowns, glows and range, and the layout keeps working if you disable the addon.
 
+### New in 0.9.3
+
+- **No more "bindings changed" pop-up when you disconnect the controller**, with nothing changed. Playing without one no longer empties your profile's bindings either.
+- **No more Lua error on clicking a line in the dialogue window** that the game had just dropped. See the [changelog](CHANGELOG.md).
+
 ### New in 0.9.2
 
 - **No more Lua error on confirms with a countdown**, such as the item interaction window's. Their button has no label at first, which stopped the pad prompts under the pop-up from showing. See the [changelog](CHANGELOG.md).
