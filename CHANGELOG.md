@@ -4,6 +4,10 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+### Fixed
+
+- **A Lua error on clicking a line in the dialogue window** after the game had dropped it. The click now does nothing.
+
 ## [0.9.2] - 2026-11-25
 
 ### Fixed

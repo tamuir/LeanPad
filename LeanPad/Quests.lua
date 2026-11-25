@@ -320,7 +320,8 @@ end
 local function clickEntry(i)
 	pick, armed = i, false
 	ns.RefreshDialogue()
-	if entries[i].choose then confirm() end
+	-- The game can empty its list while the row still shows, so the refresh may have dropped it.
+	if entries[i] and entries[i].choose then confirm() end
 end
 
 -- Narrative text in Blizzard's quest faces, which follow the client's language; the rest in LeanPad's own.

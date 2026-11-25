@@ -248,6 +248,16 @@ describe("Dialogue window", function()
 			assert.same({ "GossipOption", 2 }, lastCall())
 		end)
 
+		it("chooses nothing for a clicked line the game has since dropped", function()
+			w.quest.gossipOptions = { { name = "Tell me more", icon = 8, orderIndex = 1 } }
+			rows()[5]:Fire("OnClick")
+			assert.same({ "Boars", "Wolves", "Bears", "Tell me more" }, labels())
+			w.quest.gossipAvailable, w.quest.gossipActive, w.quest.gossipOptions = {}, {}, {}
+			rows()[4]:Fire("OnClick")
+			assert.same({}, labels())
+			assert.equal(0, #w.questCalls)
+		end)
+
 		it("leaves other buttons, and every button under a cursor the player brought up, to their bindings", function()
 			press("PAD3")
 			assert.is_true(window().Input.propagate)
