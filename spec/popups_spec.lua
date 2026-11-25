@@ -69,6 +69,15 @@ describe("Pop-ups from the pad", function()
 		assert.equal("StaticPopup2Button1", clicks().PAD1)
 	end)
 
+	it("name a button with no label yet, as on a delayed confirm, by its glyph alone", function()
+		w.glyphs.PAD1 = "|A:Gamepad_Shp_Cross_64:24:24|a"
+		StaticPopup1Button1.text = nil
+		StaticPopup1:Show()
+		assert.equal("StaticPopup1Button1", clicks().PAD1)
+		assert.equal("|A:Gamepad_Shp_Cross_64:22:22|a       Cancel", hint().Text.text)
+		assert.is_true(hint():IsShown())
+	end)
+
 	it("take only the buttons showing, and pass over a pop-up with none", function()
 		StaticPopup1Button1:Hide()
 		StaticPopup1:Show()

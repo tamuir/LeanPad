@@ -4,6 +4,10 @@ All notable changes to LeanPad are documented here. The format is based on [Keep
 
 ## [Unreleased]
 
+### Fixed
+
+- **A Lua error on confirms with a countdown.** Their button has no label at first, as in the item interaction window, which stopped the pop-up's pad prompts from showing.
+
 ## [0.9.1] - 2026-11-20
 
 ### Fixed

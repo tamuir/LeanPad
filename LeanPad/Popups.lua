@@ -40,7 +40,8 @@ local function showHint(frame, names)
 		hint.Text:SetPoint("CENTER")
 	end
 	local prompts = {}
-	for i, name in ipairs(names) do table.insert(prompts, ns.Glyphed(KEYS[i], _G[name]:GetText(), 22)) end
+	-- A delayed confirm's button has no label till its countdown starts.
+	for i, name in ipairs(names) do table.insert(prompts, ns.Glyphed(KEYS[i], _G[name]:GetText() or "", 22)) end
 	hint.Text:SetText(table.concat(prompts, "      "))
 	hint:SetWidth(hint.Text:GetStringWidth() + 40)
 	hint:ClearAllPoints()
